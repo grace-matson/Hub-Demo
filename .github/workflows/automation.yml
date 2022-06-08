@@ -1,0 +1,23 @@
+name: matrix workflow
+
+on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  example matrix:
+    runs-on: new-runner  
+    strategy:
+      matrix:
+        loc: ["dir1", "dir2"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy file to gcs bucket
+        run: gsutil cp hello.txt gs://demo-automate-hub-release/${{ matrix.loc }}
+#         run: |
+#           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
+#           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
+#           gsutil cp packages.json gs://demo-automate-hub-release/packages.json
