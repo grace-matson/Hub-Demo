@@ -12,11 +12,11 @@ jobs:
     runs-on: new-runner  
     strategy:
       matrix:
-        loc: ["dir1", "dir2"]
+        loc: ["dir1", "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
       - uses: actions/checkout@v2
       - name: Copy file to gcs bucket
-        run: gsutil cp helloworld.txt gs://demo-automate-hub-release/${{ matrix.loc }}
+        run: gsutil cp helloworld.txt gs://demo-automate-hub-release/test/${{ matrix.loc }}/helloworld.txt
 #         run: |
 #           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
 #           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
