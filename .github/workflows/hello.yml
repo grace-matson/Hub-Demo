@@ -35,8 +35,8 @@ jobs:
       - name: Copy file to gcs bucket
 #         run: gsutil cp helloworld.txt gs://demo-automate-hub-release/
         run: |
-          chmod +x ./hello.sh
-          ./hello.sh
+          chmod +x ./.github/scripts/hello.sh
+          ./.github/scripts/hello.sh
 #         run: |
 #           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
 #           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
