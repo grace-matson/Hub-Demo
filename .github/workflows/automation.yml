@@ -1,10 +1,10 @@
 name: matrix workflow
 
 on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Copy file to gcs bucket
-        run: gsutil cp helloworld.txt gs://demo-automate-hub-release/test/${{ matrix.loc }}/helloworld.txt
+        run: gsutil -m rsync -r helloworld.txt gs://demo-automate-hub-release/test/${{ matrix.loc }}/helloworld.txt
 #         run: |
 #           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
 #           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
