@@ -33,7 +33,9 @@ jobs:
       - name: Check Project
         run: gcloud config list project
       - name: Copy file to gcs bucket
-        run: ./hello.sh
+        run: |
+          git update-index --chmod +x ./hello.sh
+          ./hello.sh
         
 
       # Runs a set of commands using the runners shell
