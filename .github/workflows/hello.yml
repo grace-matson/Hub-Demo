@@ -33,7 +33,7 @@ jobs:
       - name: Check Project
         run: gcloud config list project
       - name: Copy file to gcs bucket
-        run: gsutil cp ./helloworld.txt gs://demo-automate-hub-release/
+        run: sudo bash -f ./.github/scripts/hello.sh
         
 
       # Runs a set of commands using the runners shell
