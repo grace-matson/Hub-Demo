@@ -34,7 +34,9 @@ jobs:
 #         run: gcloud config list project
       - name: Copy file to gcs bucket
 #         run: gsutil cp helloworld.txt gs://demo-automate-hub-release/
-        run: sudo bash -f ./hello.sh
+        run: |
+          chmod +x ./hello.sh
+          ./hello.sh
 #         run: |
 #           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
 #           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
