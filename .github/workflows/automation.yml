@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Copy file to gcs bucket
-        run: gsutil -m rsync -r helloworld.txt gs://demo-automate-hub-release/test/${{ matrix.loc }}/helloworld.txt
+        run: gsutil -m rsync -r ./ gs://demo-automate-hub-release/test/${{ matrix.loc }}/
 #         run: |
 #           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
 #           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
