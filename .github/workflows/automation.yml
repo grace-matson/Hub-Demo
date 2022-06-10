@@ -8,16 +8,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  first_job:
+    runs-on: new-runner
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy file to gcs bucket
+        run: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
+    
   example_matrix:
     runs-on: new-runner  
+    needs: first_job
     strategy:
       matrix:
         loc: ["dir1", "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
-      - uses: actions/checkout@v2
-      - name: Copy file to gcs bucket
-        run: gsutil -m rsync -r ./ gs://demo-automate-hub-release/test/${{ matrix.loc }}/
-#         run: |
-#           gsutil -m cp -r -n packages/ gs://demo-automate-hub-release/
-#           gsutil cp categories.json gs://demo-automate-hub-release/categories.json
-#           gsutil cp packages.json gs://demo-automate-hub-release/packages.json
+      - name: Syncing buckets
+        run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
