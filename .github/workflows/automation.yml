@@ -41,7 +41,7 @@ jobs:
     #   - run: echo "Failure"
   failure_mode:
     runs-on: new-runner  
-    # if: ${{ contains(join(needs.*.result, ','), 'failure') }}
+    if: ${{ contains(join(needs.*.result, ','), 'failure') }}
     needs: matrix_regional_buckets
     steps:
       - run: echo ${{needs.matrix_regional_buckets.result}}
