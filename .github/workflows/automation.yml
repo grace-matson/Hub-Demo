@@ -73,4 +73,4 @@ jobs:
         if: ${{failure()}}
         run: git reset --merge ${{ steps.vars.outputs.sha_short }}
   
-#not a dumb commit
+# a dumb commit which can be reverted
