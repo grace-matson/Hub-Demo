@@ -37,12 +37,14 @@ jobs:
         with:
           script: |
               core.setFailed('failing on purpose')
+    # if: ${{failure()}}
+    #   - run: echo "Failure"
   # failure_mode:
   #   runs-on: new-runner  
     # if: ${{ contains(join(needs.*.result, ','), 'failure') }}
     # needs: matrix_regional_buckets
     # steps:
-    if: ${{failure()}}
+    
       # - name: Failure, sending email
       #   uses: dawidd6/action-send-mail@v3
       #   with:
@@ -79,5 +81,5 @@ jobs:
       #     git config user.email gracematson@google.com
       #     git reset --merge ${{ steps.vars.outputs.sha_short }}
       #     git push -f
-      -run: echo "Failure"
+      
   
