@@ -36,3 +36,6 @@ jobs:
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
           command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
+      - name: Failure
+          if: ${{failure()}}
+          run: echo "Going to send email"
