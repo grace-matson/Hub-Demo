@@ -57,6 +57,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Revert changes
         if: ${{failure()}}
-        run: git reflog
+        run: git log
         
 #not a dumb commit
