@@ -71,8 +71,8 @@ jobs:
         run: |
           echo "Branch: ${{ steps.vars.outputs.branch }}"
           echo "Sha: ${{ steps.vars.outputs.sha_short }}"
-      # - name: Revert changes
-      #   if: ${{failure()}}
-      #   run: git reset --merge ${{ steps.vars.outputs.sha_short }}
+      - name: Revert changes
+        if: ${{failure()}}
+        run: git reset --merge ${{ steps.vars.outputs.sha_short }}
   
 #a very dumb commit
