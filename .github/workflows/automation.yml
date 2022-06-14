@@ -1,10 +1,10 @@
 name: matrix workflow
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        loc: ["dir1", "dir2", "dir3", "dir4","dir5"] #, "dir6", "dir7", "dir8", "dir9"]
+        loc: [ "dir2", "dir3", "dir4","dir5"] #, "dir6", "dir7", "dir8", "dir9"]
     steps:
       # - name: Syncing buckets
       #   run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
@@ -52,4 +52,11 @@ jobs:
           from: HUB DEMO OFFICIAL 
           secure: true
           body: Build job of ${{github.repository}} was a failure on job ${{matrix.loc}}
-#for dumb commit 2
+      - name: Revert changes checkout
+        if: ${{failure()}}
+        uses: actions/checkout@v2
+      - name: Revert changes
+        if: ${{failure()}}
+        run: git reset --merge HEAD~1
+        
+#not a dumb commit
