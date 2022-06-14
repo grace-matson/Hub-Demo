@@ -39,3 +39,17 @@ jobs:
       - name: Failure
         if: ${{failure()}}
         run: echo "Going to send email"
+      - name: Send mail
+        if: ${{failure()}}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Action FAILED for ${{matrix.loc}}
+          to: gracematson@google.com
+          from: HUB DEMO OFFICIAL 
+          secure: true
+          body: Build job of ${{github.repository}} was a failure on job ${{matrix.loc}}
+          
