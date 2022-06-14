@@ -55,6 +55,8 @@ jobs:
       - name: Revert changes checkout
         if: ${{failure()}}
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       
       - name: Declare some variables
         if: ${{failure()}}
