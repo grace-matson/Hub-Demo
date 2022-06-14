@@ -1,85 +1,80 @@
 name: matrix workflow
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  # main_bucket:
-  #   runs-on: new-runner
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Copy file to gcs bucket
-  #       run: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
+  main_bucket:
+    runs-on: new-runner
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy file to gcs bucket
+        run: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
     
   matrix_regional_buckets:
     runs-on: new-runner  
-    # needs: main_bucket
+    needs: main_bucket
     strategy:
-      # fail-fast: false
+      fail-fast: false
       matrix:
-        loc: [ "dir1" ] #, "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
+        loc: [ "dir1" , "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
       # - name: Syncing buckets
       #   run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
-      # - name: Syncing buckets, max 3 retries
-      #   uses: nick-fields/retry@v2
-      #   with:
-      #     timeout_seconds: 15
-      #     max_attempts: 3
-      #     retry_on: error
-      #     on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
-      #     command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
-      - uses: actions/github-script@v3
+      - name: Syncing buckets, max 3 retries
+        uses: nick-fields/retry@v2
         with:
-          script: |
-              core.setFailed('failing on purpose')
-    # if: ${{failure()}}
-    #   - run: echo "Failure"
+          timeout_seconds: 15
+          max_attempts: 3
+          retry_on: error
+          on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
+          command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
+
   failure_mode:
     runs-on: new-runner  
     if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
     needs: matrix_regional_buckets
     steps:
       - run: echo ${{needs.matrix_regional_buckets.result}}
-      # - name: Failure, sending email
-      #   uses: dawidd6/action-send-mail@v3
-      #   with:
-      #     server_address: smtp.gmail.com
-      #     server_port: 465
-      #     username: ${{secrets.MAIL_USERNAME}}
-      #     password: ${{secrets.MAIL_PASSWORD}}
-      #     subject: Github Action FAILED 
-      #     to: gracematson@google.com
-      #     from: HUB DEMO OFFICIAL 
-      #     secure: true
-      #     body: Build job of ${{github.repository}} was a failure on job
+      - name: Failure, sending email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Action FAILED 
+          to: gracematson@google.com
+          from: HUB DEMO OFFICIAL 
+          secure: true
+          body: Build job of ${{github.repository}} was a failure on job
 
-      # - name: Revert changes checkout
-      #   uses: actions/checkout@v2
-      #   with:
-      #     fetch-depth: 2
+      - name: Revert changes checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       
-      # - name: Declare some variables
-      #   id: vars
-      #   shell: bash
-      #   run: |
-      #     echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      #     echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
+      - name: Declare some variables
+        id: vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
 
-      # - name: Another step
-      #   run: |
-      #     echo "Branch: ${{ steps.vars.outputs.branch }}"
-      #     echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+      - name: Another step
+        run: |
+          echo "Branch: ${{ steps.vars.outputs.branch }}"
+          echo "Sha: ${{ steps.vars.outputs.sha_short }}"
 
-      # - name: Revert changes
-      #   run: |
-      #     git config user.name grace-matson
-      #     git config user.email gracematson@google.com
-      #     git reset --merge ${{ steps.vars.outputs.sha_short }}
-      #     git push -f
+      - name: Revert changes
+        run: |
+          git config user.name grace-matson
+          git config user.email gracematson@google.com
+          git reset --merge ${{ steps.vars.outputs.sha_short }}
+          git push -f
       
   
