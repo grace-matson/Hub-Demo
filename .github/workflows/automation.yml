@@ -8,20 +8,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  first_job:
-    runs-on: new-runner
-    steps:
-      - uses: actions/checkout@v2
-      - name: Copy file to gcs bucket
-        run: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
+  # first_job:
+  #   runs-on: new-runner
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Copy file to gcs bucket
+  #       run: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
     
   example_matrix:
     runs-on: new-runner  
-    needs: first_job
+    # needs: first_job
     strategy:
       fail-fast: false
       matrix:
-        loc: [ "dir1", "dir2", "dir3", "dir4","dir5"] #, "dir6", "dir7", "dir8", "dir9"]
+        loc: ["dir1"] #[ "dir1", "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
       # - name: Syncing buckets
       #   run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
@@ -36,27 +36,40 @@ jobs:
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
           command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
-      - name: Failure
-        if: ${{failure()}}
-        run: echo "Going to send email"
-      - name: Send mail
-        if: ${{failure()}}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Github Action FAILED for ${{matrix.loc}}
-          to: gracematson@google.com
-          from: HUB DEMO OFFICIAL 
-          secure: true
-          body: Build job of ${{github.repository}} was a failure on job ${{matrix.loc}}
+      # - name: Failure
+      #   if: ${{failure()}}
+      #   run: echo "Going to send email"
+      # - name: Send mail
+      #   if: ${{failure()}}
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     server_address: smtp.gmail.com
+      #     server_port: 465
+      #     username: ${{secrets.MAIL_USERNAME}}
+      #     password: ${{secrets.MAIL_PASSWORD}}
+      #     subject: Github Action FAILED for ${{matrix.loc}}
+      #     to: gracematson@google.com
+      #     from: HUB DEMO OFFICIAL 
+      #     secure: true
+      #     body: Build job of ${{github.repository}} was a failure on job ${{matrix.loc}}
       - name: Revert changes checkout
         if: ${{failure()}}
         uses: actions/checkout@v2
       - name: Revert changes
         if: ${{failure()}}
         run: git log
-        
+      - name: Declare some variables
+        if: ${{failure()}}
+        id: vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+      - name: Another step
+        if: ${{failure()}}
+        run: |
+          echo "Branch: ${{ steps.vars.outputs.branch }}"
+          echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+  
 #not a dumb commit
