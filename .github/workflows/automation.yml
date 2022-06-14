@@ -37,8 +37,8 @@ jobs:
         with:
           script: |
               core.setFailed('failing on purpose')
-    # if: ${{failure()}}
-    #   - run: echo "Failure"
+    if: ${{failure()}}
+      - run: echo "Failure"
   # failure_mode:
   #   runs-on: new-runner  
     # if: ${{ contains(join(needs.*.result, ','), 'failure') }}
