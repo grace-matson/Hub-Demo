@@ -18,10 +18,10 @@ jobs:
   matrix_regional_buckets:
     runs-on: new-runner  
     # needs: main_bucket
-    strategy:
-      # fail-fast: false
-      matrix:
-        loc: [ "dir1" ] #, "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
+    # strategy:
+    #   # fail-fast: false
+    #   matrix:
+    #     loc: [ "dir1" ] #, "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
       # - name: Syncing buckets
       #   run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
