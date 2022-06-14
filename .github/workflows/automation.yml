@@ -19,7 +19,7 @@ jobs:
     runs-on: new-runner  
     # needs: main_bucket
     strategy:
-      fail-fast: false
+      # fail-fast: false
       matrix:
         loc: [ "dir1" ] #, "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
     steps:
@@ -37,14 +37,14 @@ jobs:
         with:
           script: |
               core.setFailed('failing on purpose')
-    if: ${{failure()}}
+    # if: ${{failure()}}
+    #   - run: echo "Failure"
+  failure_mode:
+    runs-on: new-runner  
+    if: ${{ contains(join(needs.*.result, ','), 'failure') }}
+    needs: matrix_regional_buckets
+    steps:
       - run: echo "Failure"
-  # failure_mode:
-  #   runs-on: new-runner  
-    # if: ${{ contains(join(needs.*.result, ','), 'failure') }}
-    # needs: matrix_regional_buckets
-    # steps:
-    
       # - name: Failure, sending email
       #   uses: dawidd6/action-send-mail@v3
       #   with:
