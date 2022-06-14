@@ -21,10 +21,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        loc: ["dir1", "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
+        loc: ["dir1", "dir2", "dir3", "dir4","dir5"] #, "dir6", "dir7", "dir8", "dir9"]
     steps:
       - name: Syncing buckets
         run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
-      - name: Failure
-        if: ${{failure()}}
-        run: echo "The upload to ${{matrix.loc}} has failed"
+      # - name: Failure
+      #   if: ${{failure()}}
+      #   run: echo "The upload to ${{matrix.loc}} has failed"
+      - name: Retry step usage
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 15
+          max_attempts: 3
+          retry_on: error
+          command: echo "The upload to ${{matrix.loc}} has failed"
