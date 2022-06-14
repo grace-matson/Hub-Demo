@@ -34,4 +34,5 @@ jobs:
           timeout_seconds: 15
           max_attempts: 3
           retry_on: error
-          command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
+          command: echo "The upload to ${{matrix.loc}} has failed"
+        run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
