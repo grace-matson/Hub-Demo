@@ -77,6 +77,6 @@ jobs:
           git config user.name grace-matson
           git config user.email gracematson@google.com
           git reset --merge ${{ steps.vars.outputs.sha_short }}
-          git push
+          git push -f
   
-#a very dumb commit, please get reverted!!
+
