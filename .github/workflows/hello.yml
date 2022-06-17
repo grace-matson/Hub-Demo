@@ -9,20 +9,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  first_job:
+  job:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/github-script@v3
-      with:
-        script: |
-            core.setFailed('failing on purpose')
+    - name: Declare some variables
+      id: vars
+      shell: bash
+      run: |
+      echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
 
-  second_job:
-    runs-on: ubuntu-latest
-    needs: first_job
-    if: ${{ failure()}}
-    steps:
-      - run: echo "Hello world"
+    - name: Another step
+      run: |
+        echo "Branch: ${{ steps.vars.outputs.branch }}"
+        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+
+  # first_job:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/github-script@v3
+  #     with:
+  #       script: |
+  #           core.setFailed('failing on purpose')
+
+  # second_job:
+  #   runs-on: ubuntu-latest
+  #   needs: first_job
+  #   if: ${{ failure()}}
+  #   steps:
+  #     - run: echo "Hello world"
 
       # Runs a single command using the runners shell
 #       - name: Hello world 
