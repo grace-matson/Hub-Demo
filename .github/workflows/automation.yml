@@ -1,11 +1,10 @@
-name: matrix workflow
+name: automation
 
 on:
-  # push:
-  #   branches: [ main ]
-  # pull_request:
-  #   branches: [ main ]
   workflow_dispatch:
+
+concurrency:
+  group: test
 
 jobs:
   main_bucket:
@@ -21,10 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        loc: [ "dir1" , "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
+        loc: [ "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8"]
     steps:
-      # - name: Syncing buckets
-      #   run: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
       - name: Syncing buckets, max 3 retries
         uses: nick-fields/retry@v2
         with:
@@ -39,7 +36,32 @@ jobs:
     if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
     needs: matrix_regional_buckets
     steps:
-      - run: echo ${{needs.matrix_regional_buckets.result}}
+      - name: Revert changes checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Last commit before workflow run
+        id: last_commit
+        shell: bash
+        run: |
+          echo "::set-output name=sha::$(git rev-parse HEAD)"
+
+      - name: Last successful commit ID
+        uses: SamhammerAG/last-successful-build-action@v2
+        id: last_successful_commit
+        with:
+          token: ${{ github.token }}
+          branch: "main"
+          workflow: "automation"
+          verify: true
+
+      - name: Commit hash
+        run: |
+          echo "Last commit: ${{steps.last_commit.outputs.sha}}"
+          echo "Last successful commit: ${{ steps.last_successful_commit.outputs.sha }}"
+          echo "${{github.sha}}"
+
       - name: Failure, sending email
         uses: dawidd6/action-send-mail@v3
         with:
@@ -47,34 +69,33 @@ jobs:
           server_port: 465
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: Github Action FAILED 
+          subject: Failure of Github workflow run in ${{github.repository}}
           to: gracematson@google.com
           from: HUB DEMO OFFICIAL 
           secure: true
-          body: Build job of ${{github.repository}} was a failure on job
+          body: |
+              Repository : ${{github.repository}}
+              Workflow : ${{ github.workflow	}}
+              Run : ${{github.run_id}}
+              Last commit before failed workflow execution : ${{steps.last_commit.outputs.sha}}
+              Last commit before successful workflow : ${{ steps.last_successful_commit.outputs.sha }}
 
-      - name: Revert changes checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-      
-      - name: Declare some variables
-        id: vars
-        shell: bash
-        run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
-
-      - name: Another step
-        run: |
-          echo "Branch: ${{ steps.vars.outputs.branch }}"
-          echo "Sha: ${{ steps.vars.outputs.sha_short }}"
 
       - name: Revert changes
         run: |
           git config user.name grace-matson
           git config user.email gracematson@google.com
-          git reset --merge ${{ steps.vars.outputs.sha_short }}
-          git push -f
+          git reset ${{ steps.vars.outputs.sha_short }}
+          git add .
+          git commit -m "Trying to revert to ${{ steps.vars.outputs.sha_short }}"
+
+      - name: Create Pull Request for Revert
+        uses: peter-evans/create-pull-request@v3.10.0
+        with:
+          token: ${{ github.token }}
+          title: 'Automated PR'
+          body: |
+            This PR is auto-generated 
+          branch: revert
       
   
