@@ -14,8 +14,8 @@ jobs:
     steps:
     - name: Revert changes checkout
       uses: actions/checkout@v2
-      # with:
-      #   fetch-depth: 2
+      with:
+        fetch-depth: 0
     # - name: Declare some variables
     #   id: vars
     #   shell: bash
@@ -52,6 +52,7 @@ jobs:
         token: ${{ github.token }}
         branch: "main"
         workflow: "hello"
+        verify: true
 
     - name: Commit hash
       run: |
