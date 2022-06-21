@@ -16,33 +16,45 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 2
-    - name: Declare some variables
-      id: vars
-      shell: bash
-      run: |
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
+    # - name: Declare some variables
+    #   id: vars
+    #   shell: bash
+    #   run: |
+    #     echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+    #     echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
 
-    - name: Another step
-      run: |
-        echo "Branch: ${{ steps.vars.outputs.branch }}"
-        echo "Sha: ${{ steps.vars.outputs.sha_short }}"
-    - name: Revert changes
-      run: |
-        git config user.name grace-matson
-        git config user.email gracematson@google.com
-        git reset ${{ steps.vars.outputs.sha_short }}
-        git add .
-        git commit -m "Trying to revert to ${{ steps.vars.outputs.sha_short }}"
+    # - name: Another step
+    #   run: |
+    #     echo "Branch: ${{ steps.vars.outputs.branch }}"
+    #     echo "Sha: ${{ steps.vars.outputs.sha_short }}"
+    # - name: Revert changes
+    #   run: |
+    #     git config user.name grace-matson
+    #     git config user.email gracematson@google.com
+    #     git reset ${{ steps.vars.outputs.sha_short }}
+    #     git add .
+    #     git commit -m "Trying to revert to ${{ steps.vars.outputs.sha_short }}"
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3.10.0
+    # - name: Create Pull Request
+    #   uses: peter-evans/create-pull-request@v3.10.0
+    #   with:
+    #     token: ${{ github.token }}
+    #     title: 'Automated PR'
+    #     body: |
+    #       This PR is auto-generated 
+    #     branch: revert
+
+    - uses: bahmutov/npm-install@v1.4.5
+    - uses: nrwl/last-successful-commit-action@v1
+      id: last_successful_commit
       with:
-        token: ${{ github.token }}
-        title: 'Automated PR'
-        body: |
-          This PR is auto-generated 
-        branch: revert
+        branch: 'master'
+        workflow_id: 'hello.yml'
+        github_token: ${{ github.token}}
+
+    - name: Commit hash
+      run: |
+        echo "Branch: ${{ steps.last_successful_commit.outputs.commit_hash }}"
 
   # first_job:
   #   runs-on: ubuntu-latest
