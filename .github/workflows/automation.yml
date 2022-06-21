@@ -81,7 +81,7 @@ jobs:
           git config user.email gracematson@google.com
           git reset ${{ steps.last_successful_commit.outputs.sha }}
           git add .
-          git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}""
+          git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}"
 
       - name: Create Pull Request for Revert
         uses: peter-evans/create-pull-request@v3.10.0
