@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Revert changes checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       # with:
       #   fetch-depth: 2
     # - name: Declare some variables
@@ -44,17 +44,18 @@ jobs:
     #       This PR is auto-generated 
     #     branch: revert
 
-    - uses: bahmutov/npm-install@v1.4.5
-    - uses: nrwl/last-successful-commit-action@v1
+    # - uses: bahmutov/npm-install@v1.4.5
+    # - uses: nrwl/last-successful-commit-action@v1
+    - uses: SamhammerAG/last-successful-build-action@v2
       id: last_successful_commit
       with:
-        branch: 'master'
+        branch: 'main'
         workflow_id: 'hello.yml'
-        github_token: ${{ github.token}}
+        github_token: ${{ github.token }}
 
     - name: Commit hash
       run: |
-        echo "Branch: ${{ steps.last_successful_commit.outputs.commit_hash }}"
+        echo "Branch: ${{ steps.last_successful_commit.outputs.sha }}"
 
   # first_job:
   #   runs-on: ubuntu-latest
