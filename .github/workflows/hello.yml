@@ -44,7 +44,7 @@ jobs:
     #       This PR is auto-generated 
     #     branch: revert
 
-    - uses: bahmutov/npm-install@v1.4.5
+    # - uses: bahmutov/npm-install@v1.4.5
     - uses: nrwl/last-successful-commit-action@v1
       id: last_successful_commit
       with:
