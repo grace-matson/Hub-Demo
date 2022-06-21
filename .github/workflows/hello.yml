@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Revert changes checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
+      uses: actions/checkout@v1
+      # with:
+      #   fetch-depth: 2
     # - name: Declare some variables
     #   id: vars
     #   shell: bash
@@ -44,7 +44,7 @@ jobs:
     #       This PR is auto-generated 
     #     branch: revert
 
-    # - uses: bahmutov/npm-install@v1.4.5
+    - uses: bahmutov/npm-install@v1.4.5
     - uses: nrwl/last-successful-commit-action@v1
       id: last_successful_commit
       with:
