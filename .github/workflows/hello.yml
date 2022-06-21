@@ -49,9 +49,9 @@ jobs:
     - uses: SamhammerAG/last-successful-build-action@v2
       id: last_successful_commit
       with:
-        branch: 'main'
-        workflow: 'hello'
-        github_token: ${{ github.token }}
+        token: ${{ github.token }}
+        branch: "main"
+        workflow: "hello"
 
     - name: Commit hash
       run: |
