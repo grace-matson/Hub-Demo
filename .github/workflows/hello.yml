@@ -40,7 +40,7 @@ jobs:
         title: 'Automated PR'
         body: |
           This PR is auto-generated 
-        branch: main
+        branch: revert
 
   # first_job:
   #   runs-on: ubuntu-latest
