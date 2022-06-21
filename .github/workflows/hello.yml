@@ -8,10 +8,14 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: test
 jobs:
   job:
     runs-on: ubuntu-latest
     steps:
+    - name: Sleep
+      run: sleep 1m
     - name: Revert changes checkout
       uses: actions/checkout@v2
       with:
