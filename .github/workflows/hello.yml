@@ -50,7 +50,7 @@ jobs:
       id: last_successful_commit
       with:
         branch: 'main'
-        workflow: 'hello.yml'
+        workflow: 'hello'
         github_token: ${{ github.token }}
 
     - name: Commit hash
