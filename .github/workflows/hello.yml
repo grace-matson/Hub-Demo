@@ -22,7 +22,7 @@ jobs:
         fetch-depth: 0
 
     - name: Script run
-    - run: |
+      run: |
         chmod +x ./.github/scripts/hello.sh
         ./.github/scripts/hello.sh
 
