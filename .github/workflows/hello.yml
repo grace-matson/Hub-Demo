@@ -10,57 +10,55 @@ on:
 
 concurrency:
   group: test
+  
 jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-    - name: Sleep
-      run: sleep 1m
+
     - name: Revert changes checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    # - name: Declare some variables
-    #   id: vars
-    #   shell: bash
-    #   run: |
-    #     echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-    #     echo "::set-output name=sha_short::$(git rev-parse --short HEAD~1)"
 
-    # - name: Another step
-    #   run: |
-    #     echo "Branch: ${{ steps.vars.outputs.branch }}"
-    #     echo "Sha: ${{ steps.vars.outputs.sha_short }}"
-    # - name: Revert changes
-    #   run: |
-    #     git config user.name grace-matson
-    #     git config user.email gracematson@google.com
-    #     git reset ${{ steps.vars.outputs.sha_short }}
-    #     git add .
-    #     git commit -m "Trying to revert to ${{ steps.vars.outputs.sha_short }}"
+    - name: Script run
+      run: |
+        chmod +x ./.github/scripts/hello.sh
+        ./.github/scripts/hello.sh
 
-    # - name: Create Pull Request
-    #   uses: peter-evans/create-pull-request@v3.10.0
-    #   with:
-    #     token: ${{ github.token }}
-    #     title: 'Automated PR'
-    #     body: |
-    #       This PR is auto-generated 
-    #     branch: revert
-
-    # - uses: bahmutov/npm-install@v1.4.5
-    # - uses: nrwl/last-successful-commit-action@v1
-    - uses: SamhammerAG/last-successful-build-action@v2
+    - name: Last successful commit ID
+      uses: SamhammerAG/last-successful-build-action@v2
       id: last_successful_commit
       with:
         token: ${{ github.token }}
         branch: "main"
-        workflow: "hello"
+        workflow: "automation"
         verify: true
 
     - name: Commit hash
       run: |
-        echo "Branch: ${{ steps.last_successful_commit.outputs.sha }}"
+        echo "Last commit before current run: ${{github.sha}}"
+        echo "Last successful commit: ${{ steps.last_successful_commit.outputs.sha }}"
+    
+
+    - name: Revert changes
+      run: |
+        git config user.name grace-matson
+        git config user.email gracematson@google.com
+        git reset ${{ steps.last_successful_commit.outputs.sha }}
+        git add .
+        git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}"
+
+    - name: Create Pull Request for Revert
+      uses: peter-evans/create-pull-request@v3.10.0
+      with:
+        token: ${{ github.token }}
+        title: 'Automated PR'
+        body: |
+          This PR is to revert from commit ${{github.sha}} to ${{ steps.last_successful_commit.outputs.sha }} 
+          because workflow ${{ github.workflow	}} failed on run ${{github.run_id}}
+        branch: revert
+    
 
   # first_job:
   #   runs-on: ubuntu-latest
