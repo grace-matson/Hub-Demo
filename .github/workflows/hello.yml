@@ -55,7 +55,7 @@ jobs:
           because workflow ${{ github.workflow	}} failed on run ${{github.run_id}}
         branch: revert
     
-    -name: Sleep
+    - name: Sleep
       run: sleep 1m
 
   # first_job:
