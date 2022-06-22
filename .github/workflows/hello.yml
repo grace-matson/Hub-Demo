@@ -23,8 +23,8 @@ jobs:
 
     - name: Script run
     - run: |
-          chmod +x ./.github/scripts/hello.sh
-          ./.github/scripts/hello.sh
+        chmod +x ./.github/scripts/hello.sh
+        ./.github/scripts/hello.sh
 
     - name: Last successful commit ID
       uses: SamhammerAG/last-successful-build-action@v2
