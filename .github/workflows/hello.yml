@@ -32,7 +32,7 @@ jobs:
       with:
         token: ${{ github.token }}
         branch: "main"
-        workflow: "automation"
+        workflow: "hello"
         verify: true
 
     - name: Commit hash
