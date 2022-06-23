@@ -50,6 +50,7 @@ jobs:
         git config user.name grace-matson
         git config user.email gracematson@google.com
         git read-tree -u --reset ${{ steps.last_successful_commit.outputs.sha }}
+        git status
         git add .
         git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}"
 
