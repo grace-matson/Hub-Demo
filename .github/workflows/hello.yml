@@ -54,7 +54,7 @@ jobs:
         git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}"
 
     - name: Create Pull Request for Revert
-      if: ${{ always() && steps.script_run.outcome == "failure"}}
+      if: ${{ always() && contains(steps.script_run.outcome, 'failure') }}
       uses: peter-evans/create-pull-request@v3.10.0
       with:
         token: ${{ github.token }}
