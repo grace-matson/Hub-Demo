@@ -22,6 +22,7 @@ jobs:
         fetch-depth: 0
 
     - name: Script run
+      id: script_run
       run: |
         chmod +x ./.github/scripts/hello.sh
         ./.github/scripts/hello.sh
@@ -53,7 +54,7 @@ jobs:
         git commit -m "Trying to revert to ${{ steps.last_successful_commit.outputs.sha }}"
 
     - name: Create Pull Request for Revert
-      if: always() && ${{ steps.last_successful_commit.outcome }} == "failure"
+      if: ${{ always() && steps.script_run.outcome == "failure"}}
       uses: peter-evans/create-pull-request@v3.10.0
       with:
         token: ${{ github.token }}
