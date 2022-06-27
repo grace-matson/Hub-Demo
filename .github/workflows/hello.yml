@@ -63,7 +63,8 @@ jobs:
         body: |
           This PR is to revert from commit ${{github.sha}} to ${{ steps.last_successful_commit.outputs.sha }} 
           because workflow ${{ github.workflow	}} failed on run ${{github.run_id}}
-        branch: revert
+        branch: revert-${{github.run_id}}
+        delete-branch: true
     
 
   # first_job:
