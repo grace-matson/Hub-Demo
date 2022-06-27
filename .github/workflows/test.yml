@@ -25,7 +25,7 @@ jobs:
       run: |
         git config user.name grace-matson
         git config user.email gracematson@google.com
-        git checkout -b revert-${{github.run_id}}
+       # git checkout -b revert-${{github.run_id}}
         git read-tree -u --reset ${{ steps.vars.outputs.sha }}
         git status
         git add .
