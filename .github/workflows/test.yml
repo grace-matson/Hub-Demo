@@ -22,7 +22,7 @@ jobs:
       run: |
         git config user.name grace-matson
         git config user.email gracematson@google.com
-        git checkout -b revert-${{run_id}}
+        git checkout -b revert-${{github.run_id}}
         git read-tree -u --reset ${{ steps.vars.outputs.sha }}
         git status
         git add .
@@ -38,5 +38,5 @@ jobs:
         body: |
           This PR is to revert from commit ${{github.sha}} to ${{ steps.vars.outputs.sha }} 
           because workflow ${{ github.workflow	}} failed on run ${{github.run_id}}
-        branch: revert-${{run_id}}
+        branch: revert-${{github.run_id}}
         delete-branch: true
