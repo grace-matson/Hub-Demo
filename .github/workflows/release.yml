@@ -1,0 +1,29 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Revert changes checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Last successful commit ID
+      if: always()
+      uses: SamhammerAG/last-successful-build-action@v2
+      id: last_successful_commit
+      with:
+        token: ${{ github.token }}
+        branch: "v1"
+        workflow: "build"
+        verify: true
+
+    - name: Commit hash
+      if: always()
+      run: |
+        echo "Last commit before current run: ${{github.sha}}"
+        echo "Last successful commit: ${{ steps.last_successful_commit.outputs.sha }}"
