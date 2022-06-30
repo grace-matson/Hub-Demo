@@ -27,4 +27,4 @@ jobs:
       run: |
         echo "Last commit before current run: ${{github.sha}}"
         echo "Last successful commit: ${{ steps.last_successful_commit.outputs.sha }}"
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        echo "Branch: echo ${GITHUB_REF#refs/heads/}"
