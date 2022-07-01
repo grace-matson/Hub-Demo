@@ -19,7 +19,7 @@ jobs:
       with:
         token: ${{ github.token }}
         branch: ${{ github.ref_name }}
-        workflow: "release"
+        workflow: "build"
         verify: true
 
     - name: Commit hash
