@@ -14,7 +14,7 @@ jobs:
 
     - name: Last successful commit ID
       if: always()
-      uses: grace-matson/last-successful-build-action@v2.0.6
+      uses: grace-matson/last-successful-build-action@v2.0.7
       id: last_successful_commit_build
       with:
         token: ${{ github.token }}
@@ -24,7 +24,7 @@ jobs:
 
     - name: Last successful commit ID for e2e
       if: always()
-      uses: grace-matson/last-successful-build-action@v2.0.6
+      uses: grace-matson/last-successful-build-action@v2.0.7
       id: last_successful_commit_e2e
       with:
         token: ${{ github.token }}
