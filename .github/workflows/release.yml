@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  check:
     runs-on: ubuntu-latest
     steps:
     - name: Revert changes checkout
@@ -15,16 +15,23 @@ jobs:
     - name: Last successful commit ID
       if: always()
       uses: grace-matson/last-successful-build-action@v2.0.6
-      id: last_successful_commit
+      id: last_successful_commit_build
       with:
         token: ${{ github.token }}
         branch: ${{ github.ref_name }}
         workflow: "build"
         verify: true
 
-    - name: Commit hash
+    - name: Last successful commit ID for e2e
       if: always()
-      run: |
-        echo "Last commit before current run: ${{github.sha}}"
-        echo "Last successful commit: ${{ steps.last_successful_commit.outputs.sha }}"
-        echo "Branch: echo ${GITHUB_REF#refs/heads/}"
+      uses: grace-matson/last-successful-build-action@v2.0.6
+      id: last_successful_commit_e2e
+      with:
+        token: ${{ github.token }}
+        branch: ${{ github.ref_name }}
+        workflow: "e2e"
+        verify: true
+
+    - name: Checking for e2e and build workflows
+      if: ${{always() && !(steps.last_successful_commit_build.outputs.sha == github.sha && steps.last_successful_commit_e2e.outputs.sha ==github.sha}}
+      run: exit 0

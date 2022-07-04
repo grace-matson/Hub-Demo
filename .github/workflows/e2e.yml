@@ -1,0 +1,11 @@
+name: e2e
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Echo
+      run: echo "Hello world, this is a build commit"
