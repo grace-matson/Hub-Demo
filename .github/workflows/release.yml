@@ -34,4 +34,4 @@ jobs:
 
     - name: Checking for e2e and build workflows
       if: ${{always() && !(steps.last_successful_commit_build.outputs.sha == github.sha && steps.last_successful_commit_e2e.outputs.sha == github.sha)}}
-      run: exit 0
+      run: exit 1
