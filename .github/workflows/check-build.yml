@@ -1,0 +1,20 @@
+name: check-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check successful commit ID
+      if: always()
+      uses: grace-matson/last-successful-build-action@test-branch
+      id: check
+      with:
+        token: ${{ github.token }}
+        branch: ${{ github.ref_name }}
+        workflow: "build"
+        verify: true
+    - name: Print output
+      run: echo ${{steps.check.outputs.check}}
