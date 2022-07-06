@@ -7,6 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Revert changes checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Check successful commit ID
       if: always()
       uses: grace-matson/last-successful-build-action@test-branch
