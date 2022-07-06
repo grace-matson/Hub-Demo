@@ -13,7 +13,7 @@ jobs:
         fetch-depth: 0
     - name: Check successful commit ID
       if: always()
-      uses: grace-matson/last-successful-build-action@test-branch
+      uses: grace-matson/check-build-successful@test-branch
       id: check
       with:
         token: ${{ github.token }}
