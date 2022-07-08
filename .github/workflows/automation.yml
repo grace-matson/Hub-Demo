@@ -39,7 +39,10 @@ jobs:
   extra_job:
     runs-on: new-runner
     steps:
-     - run: |
+      - name: Revert changes checkout
+        uses: actions/checkout@v2
+      - name: Extra failure/success script run
+        run: |
          chmod +x ./.github/scripts/hello.sh
          ./.github/scripts/hello.sh
 
