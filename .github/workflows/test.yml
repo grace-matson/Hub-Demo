@@ -23,12 +23,11 @@ jobs:
     - name: Revert changes
       if: always()
       run: |
-        git config user.name grace-matson
-        git config user.email gracematson@google.com
+#        git config user.name grace-matson
+#        git config user.email gracematson@google.com
         git read-tree -u --reset ${{ steps.vars.outputs.sha }}
         git status
         git add .
-        git --version
         git commit -m "Trying to revert "
 
     - name: Create Pull Request for Revert
