@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        loc: [ "dir1", "dir2", "dir3", "dir4","dir5", "dir6", "dir7", "dir8", "dir9"]
+        loc: [ "dir1", "dir2", "dir3"] #, "dir4","dir5", "dir6", "dir7", "dir8", "dir9"
     steps:
       - name: Syncing buckets, max 3 retries
         uses: nick-fields/retry@v2
@@ -36,11 +36,17 @@ jobs:
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
           command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
+  extra_job:
+    runs-on: new-runner
+    steps:
+     - run: |
+         chmod +x ./.github/scripts/hello.sh
+         ./.github/scripts/hello.sh
 
   failure_mode:
     runs-on: new-runner  
     if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
-    needs: matrix_regional_buckets
+    needs: [matrix_regional_buckets, main_bucket, extra_job]
     steps:
       - name: Revert changes checkout
         uses: actions/checkout@v2
