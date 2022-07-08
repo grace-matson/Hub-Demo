@@ -112,7 +112,7 @@ jobs:
             Last commit before failed workflow execution : ${{github.sha}}
             Last commit before successful workflow : ${{ steps.last_successful_commit.outputs.sha }}
             PR created on branch revert-${{github.run_id}}
-            URL of PR : ${{ steps.create-pr.outputs.pull-request-url }}
-            PR number : ${{ steps.create-pr.outputs.pull-request-number }}
+            URL of PR : ${{ steps.create_pr.outputs.pull-request-url }}
+            PR number : ${{ steps.create_pr.outputs.pull-request-number }}
       
   
