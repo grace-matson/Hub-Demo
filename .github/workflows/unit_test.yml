@@ -12,7 +12,7 @@ jobs:
         ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Check payload
-      run : echo ${{ toJson(github.event) }}
+      run : echo "${{ toJson(github.event) }}"
     - uses: ruslandulina/compare-basehead-commits@v1
       if: always()
       id: list
