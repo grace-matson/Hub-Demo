@@ -13,3 +13,8 @@ jobs:
 
     - name: Check payload
       run : echo ${{ toJson(github) }}
+    - uses: ruslandulina/compare-basehead-commits@v1
+      id: list
+      with:
+        format: 'json'
+    - run: echo ${{ steps.list.outputs.all }}
