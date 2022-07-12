@@ -1,7 +1,6 @@
 import os
 import subprocess
 import json
-import yaml
 import re
 import logging
 
@@ -22,4 +21,3 @@ def run_shell_command(cmd):
   if(process.returncode != 0):
     print('Process completed with error: ', process.stderr)
   assert process.returncode == 0
-
