@@ -19,7 +19,7 @@ jobs:
       run : echo "${{ toJson(github.event) }}"
 
     - name: Get list of changed files
-      uses: ruslandulina/compare-basehead-commits@v1
+      uses: grace-matson/compare-basehead-commits@main
       if: always()
       id: list
       with:
