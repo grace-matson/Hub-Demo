@@ -4,7 +4,7 @@ import utilities
 import json
 
 list = os.getenv('LIST')
-list = list.strip('][').split(',')
+list = list.strip(']["').split(',')
 print(list)
 specfiles = []
 for file in list:
