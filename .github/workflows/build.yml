@@ -1,7 +1,9 @@
 name: build
 
 on:
-  workflow_call:
+  workflow_run:
+    types:
+    -[requested]
   workflow_dispatch:
 
 jobs:
@@ -10,5 +12,4 @@ jobs:
     steps:
     - name: Echo
       run: |
-        echo "Hello world, this is a build commit"
-        exit 1
+        echo "${{ github.event.workflow_run}}"
