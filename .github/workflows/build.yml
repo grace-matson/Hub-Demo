@@ -3,7 +3,7 @@ name: build
 on:
   workflow_run:
     types:
-    - [requested]
+      - requested
   workflow_dispatch:
 
 jobs:
