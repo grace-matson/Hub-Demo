@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-job:
+#  setup-job:
 #    if: ${{ github.ref_type == 'tag' }}
-    uses: ./.github/workflows/build.yml
+#    uses: ./.github/workflows/build.yml
 
   release-job:
     runs-on: ubuntu-latest
-    needs: setup-job
+#    needs: setup-job
     steps:
       - run: echo "hello"
 #    - uses: actions/checkout@v2
