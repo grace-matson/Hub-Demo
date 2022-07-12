@@ -1,0 +1,58 @@
+
+*****************************************************
+Summary
+-------
+Generated at: 2022-05-24T12:32:54+00:00
+Notes: 0
+Binaries: 0
+Archives: 0
+Standards: 21
+
+Apache Licensed: 21
+Generated Documents: 0
+
+JavaDocs are generated and so license header is optional
+Generated files do not required license headers
+
+0 Unknown Licenses
+
+*******************************
+
+Unapproved licenses:
+
+
+*******************************
+
+Archives:
+
+*****************************************************
+  Files with Apache License headers will be marked AL
+  Binary files (which do not require AL headers) will be marked B
+  Compressed archives will be marked A
+  Notices, licenses etc will be marked N
+  AL    suppressions.xml
+  AL    checkstyle.xml
+  AL    pom.xml
+  AL    src/main/resources/logback.xml
+  AL    src/main/java/io/cdap/hub/Package.java
+  AL    src/main/java/io/cdap/hub/spec/CategoryMeta.java
+  AL    src/main/java/io/cdap/hub/spec/ActionArguments.java
+  AL    src/main/java/io/cdap/hub/spec/Validatable.java
+  AL    src/main/java/io/cdap/hub/spec/PackageMeta.java
+  AL    src/main/java/io/cdap/hub/spec/ActionSpec.java
+  AL    src/main/java/io/cdap/hub/spec/PackageSpec.java
+  AL    src/main/java/io/cdap/hub/spec/LicenseInfo.java
+  AL    src/main/java/io/cdap/hub/Publisher.java
+  AL    src/main/java/io/cdap/hub/Hub.java
+  AL    src/main/java/io/cdap/hub/Tool.java
+  AL    src/main/java/io/cdap/hub/S3Publisher.java
+  AL    src/main/java/io/cdap/hub/Signer.java
+  AL    src/main/java/io/cdap/hub/Packager.java
+  AL    src/main/java/io/cdap/hub/Generator.java
+  AL    src/main/java/io/cdap/hub/SignedFile.java
+  AL    src/main/java/io/cdap/hub/PackageId.java
+ 
+*****************************************************
+ Printing headers for files without AL header...
+ 
+ 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.19">
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Package.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/CategoryMeta.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/ActionArguments.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/Validatable.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/PackageMeta.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/ActionSpec.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/PackageSpec.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/spec/LicenseInfo.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Publisher.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Hub.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Tool.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/S3Publisher.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Signer.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Packager.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/Generator.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/SignedFile.java">
+</file>
+<file name="/usr/local/google/home/gracematson/IdeaProjects/hub/packager/src/main/java/io/cdap/hub/PackageId.java">
+</file>
+</checkstyle>

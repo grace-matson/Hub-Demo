@@ -5,6 +5,7 @@ import json
 
 list = os.getenv('LIST')
 list = list.strip('][').split(',')
+print(list)
 specfiles = []
 for file in list:
   if(file.split('/')[-1]=="spec.json"):
