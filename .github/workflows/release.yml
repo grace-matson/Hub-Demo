@@ -5,7 +5,7 @@ on:
 jobs:
   setup-job:
     if: ${{ github.ref_type == 'tag' }}
-    uses: ./.github/workflows/build.yml@main
+    uses: ./.github/workflows/build.yml
 
   release-job:
     runs-on: ubuntu-latest
