@@ -8,4 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Echo
-      run: echo "Hello world, this is a build commit"
+      run: |
+        echo "Hello world, this is a build commit"
+        exit 1
