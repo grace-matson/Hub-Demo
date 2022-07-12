@@ -2,6 +2,8 @@ name: build
 
 on:
   workflow_run:
+    workflows:
+      - release-to-maven-central-tag
     types:
       - requested
   workflow_dispatch:
