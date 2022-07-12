@@ -5,10 +5,7 @@ on:
 jobs:
   setup-job:
     if: ${{ github.ref_type == 'tag' }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Trigger build
-      uses: grace-matson/Hub-Demo/.github/workflows/build.yml
+    uses: grace-matson/Hub-Demo/.github/workflows/build.yml
 
   release-job:
     runs-on: ubuntu-latest
