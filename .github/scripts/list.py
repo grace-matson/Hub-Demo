@@ -2,15 +2,19 @@ import os
 import sys
 import utilities
 import json
+import logging
+
+logging.getLogger().setLevel(logging.INFO)
 
 list = os.getenv('LIST')
 list = list.strip(']["').split(',')
-print(list)
+logging.info(list)
+
 specfiles = []
 for file in list:
   if(file.split('/')[-1]=="spec.json"):
     specfiles.append(file)
-
+logging.info(specfiles)
 if(len(specfiles)==0):
   sys.exit(0)
 
