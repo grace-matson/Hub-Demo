@@ -23,6 +23,7 @@ jobs:
     - name: Log list
       if: always()
       env:
-        LIST: ${{ steps.list.outputs.all }}
+        ADDED_LIST: ${{ steps.list.outputs.added }}
+        MODIFIED_LIST: ${{ steps.list.outputs.modified }}
       run: python3 ./.github/scripts/list.py
 
