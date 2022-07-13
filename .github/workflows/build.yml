@@ -3,7 +3,7 @@ name: build
 on:
   workflow_run:
     workflows:
-      - release-to-maven-central-tag, unit_test
+      - [release-to-maven-central-tag, unit_test]
     types:
       - requested
       - completed
