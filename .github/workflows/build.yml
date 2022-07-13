@@ -5,7 +5,7 @@ on:
     workflows:
       - release-to-maven-central-tag
     types:
-      - requested
+      - [requested, completed]
   workflow_dispatch:
 
 jobs:
