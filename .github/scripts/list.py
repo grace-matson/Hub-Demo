@@ -17,14 +17,23 @@ list = added_list + modified_list
 logging.info(list)
 
 specfiles = []
+plugins = []
+versions = []
 for file in list:
   if(file.split('/')[-1]=="spec.json"):
     specfiles.append(file)
+    plugins.append(file.split('/')[1])
+    versions.append(file.split('/')[2])
+
 logging.info(specfiles)
 if(len(specfiles)==0):
   sys.exit(0)
 
 f = open("./packages.json", "r")
+l = json.loads(f.read())
+print(l)
+
+f = open(specfiles[0], "r")
 l = json.loads(f.read())
 print(l)
 
