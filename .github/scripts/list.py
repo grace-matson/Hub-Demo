@@ -5,7 +5,7 @@ import json
 import logging
 
 logging.getLogger().setLevel(logging.INFO)
-
+# list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
 os.chdir('./packager/')
 utilities.run_shell_command('mvn clean package')
 os.chdir('../')
@@ -17,25 +17,44 @@ list = added_list + modified_list
 logging.info(list)
 
 specfiles = []
-plugins = []
-versions = []
+modifiedPlugins = []
 for file in list:
   if(file.split('/')[-1]=="spec.json"):
     specfiles.append(file)
-    plugins.append(file.split('/')[1])
-    versions.append(file.split('/')[2])
-
+    modifiedPlugins.append(file.split('/')[1]+'/'+file.split('/')[2])
+logging.info(modifiedPlugins)
 logging.info(specfiles)
+
 if(len(specfiles)==0):
   sys.exit(0)
 
-f = open("./packages.json", "r")
-l = json.loads(f.read())
-print(l)
+packagesList = json.loads(open("./packages.json", "r").read())
+#converting to dictionary format to access easily later    Key: "<plugin_name>/<version>" Value: artifact object in packagesList
+#only appending those plugins which are modified/added
+packagesDict = dict([(plugin['name']+'/'+plugin['version'], plugin)
+                     for plugin in packagesList
+                     if plugin['name']+'/'+plugin['version'] in modifiedPlugins])
+print("Dictionary of modified packages: \n", packagesDict)
 
-f = open(specfiles[0], "r")
-l = json.loads(f.read())
-print(l)
+if(len(packagesDict)!=len(modifiedPlugins)):
+  sys.exit(1)
+
+for index, plugin in enumerate(modifiedPlugins):
+  specFile = json.loads(open(specfiles[index], "r").read())
+  packagesDictObject = packagesDict[plugin]
+
+  logging.info("\n\n Printing specFile for "+ plugin)
+  logging.info(json.dumps(specFile, indent=2))
+
+  logging.info("\n\n Printing packages.json info for "+ plugin)
+  logging.info(json.dumps(packagesDictObject, indent=2))
+
+  if(not(specFile['cdapVersion']==packagesDictObject['cdapVersion'])):
+    sys.exit("Fields do not match in packages.json and the added plugins")
+
+else :
+  logging.info("Success, all modified/added plugin versions are added in packages.json")
+
 
 
 #"packages/database-plugin-db2-plugin/1.2.0/spec.json"
