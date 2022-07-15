@@ -25,5 +25,5 @@ jobs:
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
-      run: python3 ./.github/scripts/lis.py
+      run: python3 ./.github/scripts/list.py
 

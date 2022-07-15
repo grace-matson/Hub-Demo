@@ -12,6 +12,9 @@ jobs:
 #    needs: setup-job
     steps:
       - run: echo "hello"
+      - name: Log list
+        if: always()
+        run: python3 ./.github/scripts/lis.py
 #    - uses: actions/checkout@v2
 #      with:
 #        ref: ${{ github.sha }}
