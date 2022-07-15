@@ -1,5 +1,6 @@
 import utilities
-utilities.run_shell_command('pip install google-cloud-storage')
+utilities.run_shell_command('pip3 install google-cloud-storage')
+
 from google.cloud import storage
 storage_client = storage.Client()
 bucket_name = 'demo-automate-hub-release'
