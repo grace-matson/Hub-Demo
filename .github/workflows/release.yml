@@ -11,7 +11,7 @@ jobs:
     runs-on: new-runner
 #    needs: setup-job
     steps:
-      - run: pip install google-cloud-storage
+#      - run: pip install google-cloud-storage
       - name: Log list
         if: always()
         run: python3 ./.github/scripts/lis.py
