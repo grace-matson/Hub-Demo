@@ -1,7 +1,8 @@
 import utilities
 import subprocess as sp
-output = sp.getoutput('gsutil ls gs://demo-automate-hub-release/packages/')
-print (output)
+# output = sp.getoutput('gsutil ls gs://demo-automate-hub-release/packages/').split('\n')
+import requests
+# print (output.split('\n'))
 # utilities.run_shell_command('pip3 install google-cloud-storage')
 # output = utilities.run_shell_command('gsutil ls gs://demo-automate-hub-release/packages/')
 # print("coutput :", output)
@@ -13,5 +14,9 @@ print (output)
 # print(storage.Blob(bucket=bucket, name='packages/database-plugin-db2-plugin/1.3.0/db2-plugin-1.3.0.jar').exists(storage_client))
 # blobs_all = list(bucket.list_blobs())
 # print(blobs_all)
-print("hello")
-utilities.run_shell_command('mvn --version')
+groupId ='io.cdap.plugin'
+artifactId = 'google-cloud'
+version = '0.20.0'
+p = 'jar'
+response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{p}&rows=20&wt=json').json()
+print(response['response']['docs'])
