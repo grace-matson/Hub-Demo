@@ -12,6 +12,8 @@ jobs:
 #    needs: setup-job
     steps:
 #      - run: pip install google-cloud-storage
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Log list
         if: always()
         run: python3 ./.github/scripts/lis.py
