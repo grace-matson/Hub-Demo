@@ -11,3 +11,4 @@ import utilities
 # blobs_all = list(bucket.list_blobs())
 # print(blobs_all)
 print("hello")
+utilities.run_shell_command('mvn --version')
