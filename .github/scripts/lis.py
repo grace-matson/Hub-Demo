@@ -1,6 +1,6 @@
 import utilities
 # utilities.run_shell_command('pip3 install google-cloud-storage')
-# output = utilities.run_shell_command('gsutil ls gs://demo-automate-hub-release/packages/')
+output = utilities.run_shell_command('gsutil ls gs://demo-automate-hub-release/packages/')
 # print("coutput :", output)
 
 # from google.cloud import storage
