@@ -33,15 +33,9 @@ jobs:
 
   retrieve-files:
     needs: check
-    if: ${{ needs.check.outputs.list != '[]' && needs.check.outputs.list != '' && success() }}    # Skip job if no file to be fetched
     runs-on: new-runner
 
-    strategy:
-      fail-fast: false
-      matrix:
-        artifact: ${{ fromJSON(needs.check.outputs.list) }}
-
     steps:
-    - run: echo ${{ matrix.artifact }}
+    - run: echo ${{ needs.check.outputs.list }}
 
 
