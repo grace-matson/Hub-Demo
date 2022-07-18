@@ -16,6 +16,7 @@ BUCKET_NAME = 'gs://hub-cdap-io/v2/'
 
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
+utilities.run_shell_command('python --version')
 os.chdir('./packager/')
 utilities.run_shell_command('mvn clean package')
 os.chdir('../')
