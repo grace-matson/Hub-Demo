@@ -56,8 +56,9 @@ for necessaryFile in necessaryFiles :
     else:
       logging.error(necessaryFile+" not found in Maven Central")
       sys.exit(necessaryFile+" is not available in GCS or Maven")
+  elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+    logging.info(necessaryFile+" found in GCS")
   else:
     logging.error('build.yaml file does not exist for ' + artifactDir)
     sys.exit(necessaryFile+" is not available in GCS or Maven")
-
 
