@@ -14,13 +14,9 @@ logging.getLogger().setLevel(logging.INFO)
 list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json', 'packages/plugin-google-drive/1.4.0/spec.json']
 BUCKET_NAME = 'gs://hub-cdap-io/v2/'
 
-
-storage_client = storage.Client()
-bucket_name = 'hub-cdap-io'
-bucket = storage_client.bucket(bucket_name)
-
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
+# logging.info(sp.getoutput('python3 --version'))
 os.chdir('./packager/')
 utilities.run_shell_command('mvn clean package')
 os.chdir('../')
@@ -87,6 +83,13 @@ else :
 
 ##4. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
 
+gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
+# example of item in gcs_list = gs://hub-cdap-io/v2/packages/plugin-window-aggregation/
+gcs_artifact_dir = [plugin.split(BUCKET_NAME)[1][:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
+                    for plugin in gcs_list]
+logging.info(gcs_list)
+logging.info(gcs_artifact_dir)
+
 for specfile in specfiles:
   #example specfiles = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
   pathList = specfile.split('/')
@@ -104,10 +107,15 @@ for specfile in specfiles:
           necessaryFiles.append(necessaryFile)
   if len(necessaryFiles) == 0 :
     continue
+  gcs_artifact_version_dir = []
+  if(artifactDir in gcs_artifact_dir):
+    gcs_artifact_version_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}'+artifactVersionDir).split('\n')
+    gcs_artifact_version_dir = [version.split(BUCKET_NAME)[1] for version in gcs_artifact_version_list]
+    logging.info(gcs_artifact_version_dir)
 
   for necessaryFile in necessaryFiles :
 
-    if(storage.Blob(bucket=bucket, name='v2/'+necessaryFile).exists(storage_client)):
+    if(necessaryFile in gcs_artifact_version_dir):
       logging.info(necessaryFile+" found in GCS bucket")
 
     # elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
