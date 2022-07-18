@@ -85,7 +85,7 @@ else :
 
 gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
 # example of item in gcs_list = gs://hub-cdap-io/v2/packages/plugin-window-aggregation/
-gcs_artifact_dir = [plugin.removeprefix(BUCKET_NAME)[:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
+gcs_artifact_dir = [plugin.split(BUCKET_NAME)[0][:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
                     for plugin in gcs_list]
 logging.info(gcs_list)
 logging.info(gcs_artifact_dir)
@@ -110,7 +110,7 @@ for specfile in specfiles:
   gcs_artifact_version_dir = []
   if(artifactDir in gcs_artifact_dir):
     gcs_artifact_version_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}'+artifactVersionDir).split('\n')
-    gcs_artifact_version_dir = [version.removeprefix(BUCKET_NAME) for version in gcs_artifact_version_list]
+    gcs_artifact_version_dir = [version.split(BUCKET_NAME)[1] for version in gcs_artifact_version_list]
     logging.info(gcs_artifact_version_dir)
 
   for necessaryFile in necessaryFiles :
