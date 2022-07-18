@@ -150,11 +150,15 @@ for specfile in specfiles:
       packaging = necessaryFile.split('.')[-1]
 
       #using Maven Central search api to get the required file
-      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
-      logging.info(response['response']['docs'])
+      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
+      logging.info(response)
+      response = response.json()
+      logging.info(response)
 
       if(len(response['response']['docs'])>0 ):
         logging.info(necessaryFile+" found in Maven Central")
+      elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+        logging.info(necessaryFile+" found in GCS")
     elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
       logging.info(necessaryFile+" found in GCS")
     else:
