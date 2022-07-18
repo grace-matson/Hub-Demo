@@ -4,19 +4,17 @@ import utilities
 import yaml
 import json
 import logging
-import subprocess as sp
 import requests
 import ast
 from google.cloud import storage
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
-list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json', 'packages/plugin-google-drive/1.4.0/spec.json']
-BUCKET_NAME = 'gs://hub-cdap-io/v2/'
 
-
+#Connecting to the GCS bucket
 storage_client = storage.Client()
 bucket_name = 'hub-cdap-io'
+bucket_dir = 'v2/'
 bucket = storage_client.bucket(bucket_name)
 
 ##1. CREATING PACAKGES.JSON FILE
@@ -30,16 +28,16 @@ utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" 
 #Getting list of added plugins and modified plugins, and concatenating them
 added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
 modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
-list = added_list + modified_list
+am_list = added_list + modified_list
 logging.info('List of added or modified files within pull request')
-logging.info(list)
+logging.info(am_list)
 
 
 specfiles = [] #storing the modified spec.json file names
 modifiedPlugins = [] #storing the modified plugins as <plugin>/<version> format
 
 #loop to check for modified spec.json files
-for file in list:
+for file in am_list:
   if(file.split('/')[-1]=="spec.json"):
     # example of file name:
     # packages/database-plugin-db2-plugin/1.2.0/spec.json
@@ -48,6 +46,7 @@ for file in list:
     version = file.split('/')[2]
     modifiedPlugins.append(plugin+'/'+version)
 
+#logging the final list of plugin version which were added/modified
 logging.info("Modified plugins are (where spec.json was modified/added) :")
 logging.info(modifiedPlugins)
 logging.info("Spec.json files are :")
@@ -59,11 +58,11 @@ if(len(specfiles)==0):
 
 ##3. CHECKING PACKAGES.JSON FILE
 packagesList = json.loads(open("./packages.json", "r").read())
-# converting to dictionary format to access easily later
+# converting list to dictionary format to access easily later
 mod_packagesDict = dict([(plugin['name'] + '/' + plugin['version'], plugin)  # Key: "<plugin_name>/<version>" Value: artifact object in packagesList
                          for plugin in packagesList
                          if plugin['name'] +'/' + plugin['version'] in modifiedPlugins]) # only appending those plugins which are modified/added
-logging.info("Dictionary of modified packages: \n", mod_packagesDict)
+logging.info("Dictionary of modified artifacts: \n", mod_packagesDict)
 
 if(len(mod_packagesDict)!=len(modifiedPlugins)):
   #Exit failure if the no.of modified plugins in the packages.json file is not the same as the no.of modified plugins
@@ -78,57 +77,62 @@ for index, plugin in enumerate(modifiedPlugins):
   logging.info("\n\n Printing packages.json info for "+ plugin)
   logging.info(json.dumps(packagesDictObject, indent=2))
 
+  #Validating packages.json
   if(not(specFile['cdapVersion']==packagesDictObject['cdapVersion'])):
     sys.exit("Fields do not match in packages.json and the added plugins")
 
 else :
   logging.info("Success, all modified/added plugin versions are added in packages.json")
 
-
+env_file = os.getenv('GITHUB_ENV')
+with open(env_file, "a") as myfile:
+  myfile.write("output=" + str(specfiles))
 ##4. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
 
+#iterating through each plugin
 for specfile in specfiles:
-  #example specfiles = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
+  #example specfile = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
   pathList = specfile.split('/')
-  artifactDir = os.path.join(pathList[0], pathList[1]) #ex: "packages/database-plugin-db2-plugin"
-  artifactVersionDir = specfile[:-9] #ex: "packages/database-plugin-db2-plugin/1.3.0"
+  artifactDir = os.path.join(pathList[0], pathList[1]) #plugin directory ex: "packages/database-plugin-db2-plugin"
+  artifactVersionDir = specfile[:-9] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
 
-  logging.info(f'Inspecting spec.json of {artifactVersionDir} for necessary files') #necessary = jar or json files listed in actions field of spec.json file
-  specData = json.loads(open(specfile, "r").read())
-  necessaryFiles = []
+  logging.info(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
+  specData = json.loads(open(specfile, "r").read()) #loading json data in spec.json as dictionary
+  necessaryFiles = [] #list of files which need to be retrieved from GCS or Maven Central
   for object in specData['actions']:
     for property in object['arguments']:
-      if(property['name'] == 'jar' or property['name'] == 'config'):
-        necessaryFile = os.path.join(artifactVersionDir, property['value'])
-        if(not (os.path.isfile(necessaryFile))):
-          necessaryFiles.append(necessaryFile)
+      if(property['name'] == 'jar' or property['name'] == 'config'): #json file names are under config property, and jar file names under jar property
+        requiredFile = os.path.join(artifactVersionDir, property['value'])
+        if(not (os.path.isfile(requiredFile))):
+          necessaryFiles.append(requiredFile)
+
   if len(necessaryFiles) == 0 :
     continue
 
   for necessaryFile in necessaryFiles :
 
-    if(storage.Blob(bucket=bucket, name='v2/'+necessaryFile).exists(storage_client)):
+    if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
       logging.info(necessaryFile+" found in GCS bucket")
 
-    # elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
-    #   #getting required info from build.yaml file
-    #   buildFile = open(os.path.join(artifactDir, 'build.yaml'))
-    #   buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
-    #   groupId = buildData['maven-central']['groupId']
-    #   artifactId = buildData['maven-central']['artifactId']
-    #
-    #   version = artifactVersionDir.split('/')[-1]
-    #   packaging = necessaryFile.split('.')[-1]
-    #
-    #   #using Maven Central search api to get the required file
-    #   response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
-    #   logging.info(response['response']['docs'])
-    #
-    #   if(len(response['response']['docs'])>0):
-    #     logging.info(necessaryFile+" found in Maven Central")
-    #   else:
-    #     logging.error(necessaryFile+" not found in Maven Central")
-    #     sys.exit(necessaryFile+" is not available in GCS or Maven")
+    elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
+      #getting required info from build.yaml file
+      buildFile = open(os.path.join(artifactDir, 'build.yaml'))
+      buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
+      groupId = buildData['maven-central']['groupId']
+      artifactId = buildData['maven-central']['artifactId']
+
+      version = artifactVersionDir.split('/')[-1]
+      packaging = necessaryFile.split('.')[-1]
+
+      #using Maven Central search api to get the required file
+      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
+      logging.info(response['response']['docs'])
+
+      if(len(response['response']['docs'])>0):
+        logging.info(necessaryFile+" found in Maven Central")
+      else:
+        logging.error(necessaryFile+" not found in Maven Central")
+        sys.exit(necessaryFile+" is not available in GCS or Maven")
     else:
       logging.error('build.yaml file does not exist for ' + artifactDir)
       sys.exit(necessaryFile+" is not available in GCS or Maven")
