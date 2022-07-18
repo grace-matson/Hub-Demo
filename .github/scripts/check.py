@@ -16,19 +16,19 @@ BUCKET_NAME = 'gs://hub-cdap-io/v2/'
 
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
-logging.info(sp.getoutput('python3 --version'))
-os.chdir('./packager/')
-utilities.run_shell_command('mvn clean package')
-os.chdir('../')
-utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
+# logging.info(sp.getoutput('python3 --version'))
+# os.chdir('./packager/')
+# utilities.run_shell_command('mvn clean package')
+# os.chdir('../')
+# utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
-added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
-modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
-list = added_list + modified_list
-logging.info('List of added or modified files within pull request')
-logging.info(list)
+# added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
+# modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
+# list = added_list + modified_list
+# logging.info('List of added or modified files within pull request')
+# logging.info(list)
 
 
 specfiles = [] #storing the modified spec.json file names
@@ -85,7 +85,7 @@ else :
 
 gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
 # example of item in gcs_list = gs://hub-cdap-io/v2/packages/plugin-window-aggregation/
-gcs_artifact_dir = [plugin.split(BUCKET_NAME)[0][:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
+gcs_artifact_dir = [plugin.split(BUCKET_NAME)[1][:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
                     for plugin in gcs_list]
 logging.info(gcs_list)
 logging.info(gcs_artifact_dir)
