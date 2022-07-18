@@ -11,23 +11,23 @@ from google.cloud import storage
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
-# list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
-BUCKET_NAME = 'gs://hub-cdap-io/v2'
+list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json', 'packages/plugin-google-drive/1.4.0/spec.json']
+BUCKET_NAME = 'gs://hub-cdap-io/v2/'
 
 ##1. CREATING PACAKGES.JSON FILE
 #Running steps to create packages.json
-os.chdir('./packager/')
-utilities.run_shell_command('mvn clean package')
-os.chdir('../')
-utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
+# os.chdir('./packager/')
+# utilities.run_shell_command('mvn clean package')
+# os.chdir('../')
+# utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
-added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
-modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
-list = added_list + modified_list
-logging.info('List of added or modified files within pull request')
-logging.info(list)
+# added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
+# modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
+# list = added_list + modified_list
+# logging.info('List of added or modified files within pull request')
+# logging.info(list)
 
 
 specfiles = [] #storing the modified spec.json file names
@@ -84,8 +84,9 @@ else :
 
 gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
 # example of item in gcs_list = gs://hub-cdap-io/v2/packages/plugin-window-aggregation/
-gcs_artifact_dir = ["/".join(plugin.split("/")[:-1][4:]) #splitting the path with slash and taking only -> packages/plugin-window-aggregation
+gcs_artifact_dir = [plugin.removeprefix(BUCKET_NAME)[:-1] #removing prefix and taking only -> packages/plugin-window-aggregation
                     for plugin in gcs_list]
+logging.info(gcs_list)
 logging.info(gcs_artifact_dir)
 
 for specfile in specfiles:
@@ -108,7 +109,7 @@ for specfile in specfiles:
   gcs_artifact_version_dir = []
   if(artifactDir in gcs_artifact_dir):
     gcs_artifact_version_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}'+artifactVersionDir).split('\n')
-    gcs_artifact_version_dir = ["/".join(version.split("/")[3:]) for version in gcs_artifact_version_list]
+    gcs_artifact_version_dir = [version.removeprefix(BUCKET_NAME) for version in gcs_artifact_version_list]
     logging.info(gcs_artifact_version_dir)
 
   for necessaryFile in necessaryFiles :
