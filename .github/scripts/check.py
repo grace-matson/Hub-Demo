@@ -92,7 +92,7 @@ for specfile in specfiles:
   #example specfile = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
   pathList = specfile.split('/')
   artifactDir = os.path.join(pathList[0], pathList[1]) #plugin directory ex: "packages/database-plugin-db2-plugin"
-  artifactVersionDir = specfile[:-9] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
+  artifactVersionDir = specfile[:-10] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
 
   logging.info(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specfile, "r").read()) #loading json data in spec.json as dictionary
