@@ -92,7 +92,7 @@ for specfile in specfiles:
   #example specfile = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
   pathList = specfile.split('/')
   artifactDir = os.path.join(pathList[0], pathList[1]) #plugin directory ex: "packages/database-plugin-db2-plugin"
-  artifactVersionDir = specfile[:-9] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
+  artifactVersionDir = specfile[:-10] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
 
   logging.info(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specfile, "r").read()) #loading json data in spec.json as dictionary
@@ -148,13 +148,10 @@ for specfile in specfiles:
 
       version = artifactVersionDir.split('/')[-1]
       packaging = necessaryFile.split('.')[-1]
-      logging.info(groupId, artifactId, version, packaging)
+      logging.info(f"{groupId}, {artifactId}, {version}, {packaging}")
       logging.info(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
       #using Maven Central search api to get the required file
-      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
-      logging.info(response)
-      response = response.json()
-      logging.info(response)
+      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
 
       if(len(response['response']['docs'])>0 ):
         logging.info(necessaryFile+" found in Maven Central")
