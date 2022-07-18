@@ -20,10 +20,10 @@ jobs:
       id: list
       with:
         format: 'json'
-    - name: Log list
+    - name: Log list and search for necessary files
       if: always()
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
-      run: python3 ./.github/scripts/list.py
+      run: python3 ./.github/scripts/check.py
 

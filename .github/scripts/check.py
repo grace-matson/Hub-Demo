@@ -1,7 +1,7 @@
 import os
 import sys
 import utilities
-# import yaml
+import yaml
 import json
 import logging
 import subprocess as sp
@@ -10,7 +10,8 @@ import ast
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
-list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
+# list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
+BUCKET_NAME = 'gs://demo-automate-hub-release/'
 
 ##1. CREATING PACAKGES.JSON FILE
 #Running steps to create packages.json
@@ -21,7 +22,6 @@ utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" 
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
-logging.info(os.getenv('ADDED_LIST'),os.getenv('MODIFIED_LIST'))
 added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
 modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
 list = added_list + modified_list
@@ -80,7 +80,7 @@ else :
 
 
 ##4. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
-BUCKET_NAME = 'gs://demo-automate-hub-release/'
+
 gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
 # example of item in gcs_list = gs://demo-automate-hub-release/packages/plugin-window-aggregation/
 gcs_artifact_dir = ["/".join(plugin.split("/")[:-1][3:]) #splitting the path with slash and taking only -> packages/plugin-window-aggregation/
@@ -93,7 +93,7 @@ for specfile in specfiles:
   artifactDir = os.path.join(pathList[0], pathList[1]) #ex: "packages/database-plugin-db2-plugin"
   artifactVersionDir = specfile[:-9] #ex: "packages/database-plugin-db2-plugin/1.3.0"
 
-  logging.info('Inspecting spec.json for necessary files') #necessary = jar or json files listed in actions field of spec.json file
+  logging.info(f'Inspecting spec.json of {artifactVersionDir} for necessary files') #necessary = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specfile, "r").read())
   necessaryFiles = []
   for object in specData['actions']:
@@ -111,18 +111,29 @@ for specfile in specfiles:
     print(gcs_artifact_version_dir)
 
   for necessaryFile in necessaryFiles :
+
     if(necessaryFile in gcs_artifact_version_dir):
-      print("happy")
+      logging.info(necessaryFile+" found in GCS bucket")
+
     elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
+      #getting required info from build.yaml file
       buildFile = open(os.path.join(artifactDir, 'build.yaml'))
       buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
       groupId = buildData['maven-central']['groupId']
       artifactId = buildData['maven-central']['artifactId']
-      version = artifactVersionDir.split('/')[-1]
-      p = necessaryFile.split('.')[-1]
-      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{p}&rows=20&wt=json').json()
-      print(response['response']['docs'])
 
+      version = artifactVersionDir.split('/')[-1]
+      packaging = necessaryFile.split('.')[-1]
+
+      #using Maven Central search api to get the required file
+      response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
+      logging.info(response['response']['docs'])
+
+      if(len(response['response']['docs'])>0):
+        logging.info(necessaryFile+" found in Maven Central")
+      else:
+        logging.error(necessaryFile+" not found in Maven Central")
+        sys.exit(necessaryFile+" is not available in GCS or Maven")
     else:
       logging.error('build.yaml file does not exist for ' + artifactDir)
       sys.exit(necessaryFile+" is not available in GCS or Maven")
