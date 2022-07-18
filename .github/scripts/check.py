@@ -109,37 +109,10 @@ for specfile in specfiles:
 
   for necessaryFile in necessaryFiles :
 
-    # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
-    #   logging.info(necessaryFile+" found in GCS bucket")
-    #
-    # elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
-    #   #getting required info from build.yaml file
-    #   buildFile = open(os.path.join(artifactDir, 'build.yaml'))
-    #   buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
-    #   groupId = buildData['maven-central']['groupId']
-    #   artifactId = buildData['maven-central']['artifactId']
-    #
-    #   version = artifactVersionDir.split('/')[-1]
-    #   packaging = necessaryFile.split('.')[-1]
-    #
-    #   #using Maven Central search api to get the required file
-    #   response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
-    #   logging.info(response['response']['docs'])
-    #
-    #   if(len(response['response']['docs'])>0):
-    #     logging.info(necessaryFile+" found in Maven Central")
-    #   else:
-    #     logging.error(necessaryFile+" not found in Maven Central")
-    #     sys.exit(necessaryFile+" is not available in GCS or Maven")
-    # else:
-    #   logging.error('build.yaml file does not exist for ' + artifactDir)
-    #   sys.exit(necessaryFile+" is not available in GCS or Maven")
+    if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+      logging.info(necessaryFile+" found in GCS bucket")
 
-
-  # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
-  #   logging.info(necessaryFile+" found in GCS bucket")
-
-    if(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
+    elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
       #getting required info from build.yaml file
       buildFile = open(os.path.join(artifactDir, 'build.yaml'))
       buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
@@ -148,17 +121,16 @@ for specfile in specfiles:
 
       version = artifactVersionDir.split('/')[-1]
       packaging = necessaryFile.split('.')[-1]
-      logging.info(f"{groupId}, {artifactId}, {version}, {packaging}")
-      logging.info(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
+
       #using Maven Central search api to get the required file
       response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
+      logging.info(response['response']['docs'])
 
-      if(len(response['response']['docs'])>0 ):
+      if(len(response['response']['docs'])>0):
         logging.info(necessaryFile+" found in Maven Central")
-      elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
-        logging.info(necessaryFile+" found in GCS")
-    elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
-      logging.info(necessaryFile+" found in GCS")
+      else:
+        logging.error(necessaryFile+" not found in Maven Central")
+        sys.exit(necessaryFile+" is not available in GCS or Maven")
     else:
       logging.error('build.yaml file does not exist for ' + artifactDir)
       sys.exit(necessaryFile+" is not available in GCS or Maven")
