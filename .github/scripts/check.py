@@ -83,10 +83,10 @@ else :
 ##4. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
 
 gcs_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}packages/').split('\n')
-# example of item in gcs_list = gs://demo-automate-hub-release/packages/plugin-window-aggregation/
-gcs_artifact_dir = ["/".join(plugin.split("/")[:-1][3:]) #splitting the path with slash and taking only -> packages/plugin-window-aggregation/
+# example of item in gcs_list = gs://hub-cdap-io/v2/packages/plugin-window-aggregation/
+gcs_artifact_dir = ["/".join(plugin.split("/")[:-1][4:]) #splitting the path with slash and taking only -> packages/plugin-window-aggregation
                     for plugin in gcs_list]
-
+logging.info(gcs_artifact_dir)
 
 for specfile in specfiles:
   #example specfiles = "packages/database-plugin-db2-plugin/1.3.0/spec.json"
