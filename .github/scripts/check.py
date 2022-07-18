@@ -7,11 +7,12 @@ import logging
 import subprocess as sp
 import requests
 import ast
+from google.cloud import storage
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
 # list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
-BUCKET_NAME = 'gs://demo-automate-hub-release/'
+BUCKET_NAME = 'gs://hub-cdap-io/v2'
 
 ##1. CREATING PACAKGES.JSON FILE
 #Running steps to create packages.json
@@ -57,7 +58,7 @@ packagesList = json.loads(open("./packages.json", "r").read())
 mod_packagesDict = dict([(plugin['name'] + '/' + plugin['version'], plugin)  # Key: "<plugin_name>/<version>" Value: artifact object in packagesList
                          for plugin in packagesList
                          if plugin['name'] +'/' + plugin['version'] in modifiedPlugins]) # only appending those plugins which are modified/added
-print("Dictionary of modified packages: \n", mod_packagesDict)
+logging.info("Dictionary of modified packages: \n", mod_packagesDict)
 
 if(len(mod_packagesDict)!=len(modifiedPlugins)):
   #Exit failure if the no.of modified plugins in the packages.json file is not the same as the no.of modified plugins
@@ -108,7 +109,7 @@ for specfile in specfiles:
   if(artifactDir in gcs_artifact_dir):
     gcs_artifact_version_list = sp.getoutput(f'gsutil ls {BUCKET_NAME}'+artifactVersionDir).split('\n')
     gcs_artifact_version_dir = ["/".join(version.split("/")[3:]) for version in gcs_artifact_version_list]
-    print(gcs_artifact_version_dir)
+    logging.info(gcs_artifact_version_dir)
 
   for necessaryFile in necessaryFiles :
 
