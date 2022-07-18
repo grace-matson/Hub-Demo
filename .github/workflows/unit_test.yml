@@ -33,7 +33,7 @@ jobs:
 
   retrieve-files:
     needs: check
-    if: ${{ needs.check.list != '[]' && needs.check.outputs.list != '' && success() }}    # Skip job if no file to be fetched
+    if: ${{ needs.check.outputs.list != '[]' && needs.check.outputs.list != '' && success() }}    # Skip job if no file to be fetched
     runs-on: new-runner
 
     strategy:
