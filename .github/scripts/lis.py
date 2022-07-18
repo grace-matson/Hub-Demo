@@ -14,13 +14,15 @@ from google.cloud import storage
 # print(storage.Blob(bucket=bucket, name='packages/database-plugin-db2-plugin/1.3.0/db2-plugin-1.3.0.jar').exists(storage_client))
 # blobs_all = list(bucket.list_blobs())
 # print(blobs_all)
-# groupId ='io.cdap.plugin'
-# artifactId = 'google-cloud'
-# version = '0.14.0'
-# p = 'json'
-# response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{p}&rows=20&wt=json').json()
-# print(response['response']['docs'])
-# import ast
+groupId ='io.cdap.plugin'
+artifactId = 'google-cloud'
+version = '0.14.0'
+p = 'jar'
+response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{p}&rows=20&wt=json')
+print(response)
+response = response.json()
+print(response['response']['docs'])
+import ast
 #
 # str = '["packages/plugin-google-drive/1.4.0/icon.png","packages/plugin-google-drive/1.4.0/spec.json"]'
 # print(str)
