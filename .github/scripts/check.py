@@ -148,7 +148,8 @@ for specfile in specfiles:
 
       version = artifactVersionDir.split('/')[-1]
       packaging = necessaryFile.split('.')[-1]
-
+      logging.info(groupId, artifactId, version, packaging)
+      logging.info(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
       #using Maven Central search api to get the required file
       response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json')
       logging.info(response)
