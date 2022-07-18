@@ -27,3 +27,5 @@ print(str)
 print(ast.literal_eval(str))
 print(str.strip('[]"').split(','))
 print(type(ast.literal_eval(str)))
+
+list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
