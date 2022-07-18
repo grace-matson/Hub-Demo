@@ -9,9 +9,9 @@ import requests
 import ast
 from google.cloud import storage
 storage_client = storage.Client()
-bucket_name = 'hub-cdap-io'
+bucket_name = 'hub-cdap-io/v2'
 bucket = storage_client.bucket(bucket_name)
-print(storage.Blob(bucket=bucket, name='packages/database-plugin-db2-plugin/1.3.0/db2-plugin-1.3.0.jar').exists(storage_client))
+logging.info(storage.Blob(bucket=bucket, name='packages/database-plugin-db2-plugin/1.3.0/db2-plugin-1.3.0.jar').exists(storage_client))
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
 list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json', 'packages/plugin-google-drive/1.4.0/spec.json']
