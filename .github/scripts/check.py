@@ -84,9 +84,7 @@ for index, plugin in enumerate(modifiedPlugins):
 else :
   logging.info("Success, all modified/added plugin versions are added in packages.json")
 
-env_file = os.getenv('GITHUB_ENV')
-with open(env_file, "a") as myfile:
-  myfile.write("output=" + str(specfiles))
+
 ##4. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
 
 #iterating through each plugin
@@ -111,10 +109,37 @@ for specfile in specfiles:
 
   for necessaryFile in necessaryFiles :
 
-    if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
-      logging.info(necessaryFile+" found in GCS bucket")
+    # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+    #   logging.info(necessaryFile+" found in GCS bucket")
+    #
+    # elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
+    #   #getting required info from build.yaml file
+    #   buildFile = open(os.path.join(artifactDir, 'build.yaml'))
+    #   buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
+    #   groupId = buildData['maven-central']['groupId']
+    #   artifactId = buildData['maven-central']['artifactId']
+    #
+    #   version = artifactVersionDir.split('/')[-1]
+    #   packaging = necessaryFile.split('.')[-1]
+    #
+    #   #using Maven Central search api to get the required file
+    #   response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
+    #   logging.info(response['response']['docs'])
+    #
+    #   if(len(response['response']['docs'])>0):
+    #     logging.info(necessaryFile+" found in Maven Central")
+    #   else:
+    #     logging.error(necessaryFile+" not found in Maven Central")
+    #     sys.exit(necessaryFile+" is not available in GCS or Maven")
+    # else:
+    #   logging.error('build.yaml file does not exist for ' + artifactDir)
+    #   sys.exit(necessaryFile+" is not available in GCS or Maven")
 
-    elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
+
+  # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+  #   logging.info(necessaryFile+" found in GCS bucket")
+
+    if(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
       #getting required info from build.yaml file
       buildFile = open(os.path.join(artifactDir, 'build.yaml'))
       buildData = yaml.load(buildFile, Loader=yaml.FullLoader)
@@ -128,14 +153,12 @@ for specfile in specfiles:
       response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
       logging.info(response['response']['docs'])
 
-      if(len(response['response']['docs'])>0):
+      if(len(response['response']['docs'])>0 ):
         logging.info(necessaryFile+" found in Maven Central")
-      else:
-        logging.error(necessaryFile+" not found in Maven Central")
-        sys.exit(necessaryFile+" is not available in GCS or Maven")
+    elif(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+      logging.info(necessaryFile+" found in GCS")
     else:
       logging.error('build.yaml file does not exist for ' + artifactDir)
       sys.exit(necessaryFile+" is not available in GCS or Maven")
-
 
 
