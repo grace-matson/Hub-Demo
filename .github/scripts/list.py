@@ -20,10 +20,11 @@ utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" 
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
+logging.info(os.getenv('ADDED_LIST'),os.getenv('MODIFIED_LIST'))
 added_list = os.getenv('ADDED_LIST').strip(']["').split(',')
 modified_list = os.getenv('MODIFIED_LIST').strip(']["').split(',')
 list = added_list + modified_list
-logging.info('List of added of modified files within pull request')
+logging.info('List of added or modified files within pull request')
 logging.info(list)
 
 
