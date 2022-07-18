@@ -141,5 +141,9 @@ for specfile in specfiles:
       logging.error('build.yaml file does not exist for ' + artifactDir)
       sys.exit(necessaryFile+" is not available in GCS or Maven")
 
+env_file = os.getenv('GITHUB_ENV')
+with open(env_file, "a") as myfile:
+  myfile.write("output=" + str(specfiles))
+
 
 
