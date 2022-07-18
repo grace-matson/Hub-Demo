@@ -32,3 +32,4 @@ import requests
 
 plugin = "gs://hub-cdap-io/v2/packages/plugin-window-aggregation/"
 print("/".join(plugin.split("/")[:-1][4:]))
+print(plugin.split('gs://hub-cdap-io/v2/')[1])
