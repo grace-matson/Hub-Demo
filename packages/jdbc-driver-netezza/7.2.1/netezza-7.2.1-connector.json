@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "name" : "netezza",
+      "type" : "jdbc",
+      "className" : "org.netezza.Driver",
+      "description" : "Plugin for the Netezza 7.2.1 JDBC Driver"
+    }
+  ]
+}

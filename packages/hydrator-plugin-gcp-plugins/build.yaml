@@ -1,0 +1,3 @@
+maven-central:
+  groupId: io.cdap.plugin
+  artifactId: google-cloud
