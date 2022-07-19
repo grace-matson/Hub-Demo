@@ -15,7 +15,7 @@ jobs:
       run : echo "${{ toJson(github.event) }}"
 
     - name: Get list of changed files
-      uses: jitterbit/get-changed-files@v1
+      uses: ruslandulina/compare-basehead-commits@v1
       if: always()
       id: list
       with:
@@ -25,7 +25,7 @@ jobs:
       run: |
         echo ${{ steps.list.outputs.added }}
         echo ${{ steps.list.outputs.modified}}
-        echo ${{ steps.list.outputs.added_modified}}
+#        echo ${{ steps.list.outputs.added_modified}}
     - name: Log list and search for necessary files
       if: always()
       env:
