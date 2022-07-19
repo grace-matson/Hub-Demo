@@ -62,7 +62,8 @@ packagesList = json.loads(open("./packages.json", "r").read())
 mod_packagesDict = dict([(plugin['name'] + '/' + plugin['version'], plugin)  # Key: "<plugin_name>/<version>" Value: artifact object in packagesList
                          for plugin in packagesList
                          if plugin['name'] +'/' + plugin['version'] in modifiedPlugins]) # only appending those plugins which are modified/added
-logging.info("Dictionary of modified artifacts: \n", mod_packagesDict)
+logging.info("Dictionary of modified artifacts: \n")
+logging.info(mod_packagesDict)
 
 if(len(mod_packagesDict)!=len(modifiedPlugins)):
   #Exit failure if the no.of modified plugins in the packages.json file is not the same as the no.of modified plugins
