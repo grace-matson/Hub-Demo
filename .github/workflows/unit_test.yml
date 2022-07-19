@@ -20,6 +20,10 @@ jobs:
       id: list
       with:
         format: 'json'
+    - name: echo
+      run: |
+        echo ${{ steps.list.outputs.added }}
+        echo ${{ steps.list.outputs.modified }}
     - name: Log list and search for necessary files
       if: always()
       env:
