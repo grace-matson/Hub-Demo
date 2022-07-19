@@ -15,18 +15,22 @@ jobs:
       run : echo "${{ toJson(github.event) }}"
 
     - name: Get list of changed files
-      uses: tj-actions/changed-files@v23.2
+      uses: jitterbit/get-changed-files@v1
       if: always()
       id: list
+      with:
+        format: 'json'
     - name: echo
+      if: always()
       run: |
-        echo ${{ steps.list.outputs.added_files }}
-        echo ${{ steps.list.outputs.modified_files }}
+        echo ${{ steps.list.outputs.added }}
+        echo ${{ steps.list.outputs.modified}}
+        echo ${{ steps.list.outputs.added_modified}}
     - name: Log list and search for necessary files
       if: always()
       env:
-        ADDED_LIST: ${{ steps.list.outputs.added_files }}
-        MODIFIED_LIST: ${{ steps.list.outputs.modified_files }}
+        ADDED_LIST: ${{ steps.list.outputs.added }}
+        MODIFIED_LIST: ${{ steps.list.outputs.modified}}
       run: python3 ./.github/scripts/check.py
 
 
