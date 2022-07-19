@@ -16,7 +16,7 @@ storage_client = storage.Client()
 bucket_name = 'hub-cdap-io'
 bucket_dir = 'v2/'
 bucket = storage_client.bucket(bucket_name)
-
+only_warning_types =['create_driver_artifact']
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
 os.chdir('./packager/')
@@ -78,7 +78,7 @@ for index, plugin in enumerate(modifiedPlugins):
   logging.info(json.dumps(packagesDictObject, indent=2))
 
   #Validating packages.json
-  if(not(specFile['cdapVersion']==packagesDictObject['cdapVersion'])):
+  if('cdapVersion' in specFile and not(specFile['cdapVersion']==packagesDictObject['cdapVersion'])):
     sys.exit("Fields do not match in packages.json and the added plugins")
 
 else :
@@ -97,17 +97,22 @@ for specfile in specfiles:
   logging.info(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specfile, "r").read()) #loading json data in spec.json as dictionary
   necessaryFiles = [] #list of files which need to be retrieved from GCS or Maven Central
+  only_warn= []
   for object in specData['actions']:
+    warn = False
+    if object['type'] in only_warning_types:
+      warn = True
     for property in object['arguments']:
       if(property['name'] == 'jar' or property['name'] == 'config'): #json file names are under config property, and jar file names under jar property
         requiredFile = os.path.join(artifactVersionDir, property['value'])
         if(not (os.path.isfile(requiredFile))):
           necessaryFiles.append(requiredFile)
+          only_warn.append(warn)
 
   if len(necessaryFiles) == 0 :
     continue
 
-  for necessaryFile in necessaryFiles :
+  for index, necessaryFile in enumerate(necessaryFiles) :
 
     if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
       logging.info(necessaryFile+" found in GCS bucket")
@@ -129,10 +134,12 @@ for specfile in specfiles:
       if(len(response['response']['docs'])>0):
         logging.info(necessaryFile+" found in Maven Central")
       else:
-        logging.error(necessaryFile+" not found in Maven Central")
-        sys.exit(necessaryFile+" is not available in GCS or Maven")
+        logging.warning(necessaryFile+" not found in GCS or Maven Central")
+        if(not(only_warn[index])):
+          sys.exit(necessaryFile+" is not available in GCS or Maven")
     else:
-      logging.error('build.yaml file does not exist for ' + artifactDir)
-      sys.exit(necessaryFile+" is not available in GCS or Maven")
+      logging.warning('build.yaml file does not exist for ' + artifactDir)
+      if(not(only_warn[index])):
+        sys.exit(necessaryFile+" is not available in GCS or Maven")
 
 

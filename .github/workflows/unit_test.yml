@@ -15,16 +15,18 @@ jobs:
       run : echo "${{ toJson(github.event) }}"
 
     - name: Get list of changed files
-      uses: ruslandulina/compare-basehead-commits@v1
+      uses: tj-actions/changed-files@v23.2
       if: always()
       id: list
-      with:
-        format: 'json'
+    - name: echo
+      run: |
+        echo ${{ steps.list.outputs.added_files }}
+        echo ${{ steps.list.outputs.modified_files }}
     - name: Log list and search for necessary files
       if: always()
       env:
-        ADDED_LIST: ${{ steps.list.outputs.added }}
-        MODIFIED_LIST: ${{ steps.list.outputs.modified }}
+        ADDED_LIST: ${{ steps.list.outputs.added_files }}
+        MODIFIED_LIST: ${{ steps.list.outputs.modified_files }}
       run: python3 ./.github/scripts/check.py
 
 
