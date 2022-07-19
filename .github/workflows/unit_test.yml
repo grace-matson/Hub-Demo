@@ -20,11 +20,17 @@ jobs:
       id: list
       with:
         format: 'json'
+    - name: echo
+      if: always()
+      run: |
+        echo ${{ steps.list.outputs.added }}
+        echo ${{ steps.list.outputs.modified}}
+#        echo ${{ steps.list.outputs.added_modified}}
     - name: Log list and search for necessary files
       if: always()
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
-        MODIFIED_LIST: ${{ steps.list.outputs.modified }}
+        MODIFIED_LIST: ${{ steps.list.outputs.modified}}
       run: python3 ./.github/scripts/check.py
 
 

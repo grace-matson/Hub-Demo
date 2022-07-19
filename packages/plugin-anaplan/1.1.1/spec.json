@@ -1,0 +1,43 @@
+{
+  "specVersion": "1.0",
+  "label": "Anaplan plugins",
+  "description": "Anaplan plugins to read, write and run processes and actions.",
+  "author": "PlanningWorks eng",
+  "org": "Google, Inc.",
+  "created": 1589218398,
+  "categories": ["hydrator-plugin"],
+  "cdapVersion": "[6.2.3,7.0.0-SNAPSHOT)",
+  "actions": [
+    {
+      "type": "one_step_deploy_plugin",
+      "label": "Deploy Anaplan Plugins",
+      "arguments": [
+        {
+          "name": "name",
+          "value": "anaplan-plugins",
+          "canModify": false
+        },
+        {
+          "name": "version",
+          "value": "1.1.1",
+          "canModify": false
+        },
+        {
+          "name": "scope",
+          "value": "user",
+          "canModify": false
+        },
+        {
+          "name": "config",
+          "value": "anaplan-plugins-1.1.1.json",
+          "canModify": false
+        },
+        {
+          "name": "jar",
+          "value": "anaplan-plugins-1.1.1.jar",
+          "canModify": false
+        }
+      ]
+    }
+  ]
+}
