@@ -111,6 +111,7 @@ for specfile in specfiles:
           only_warn.append(warn)
 
   if len(necessaryFiles) == 0 :
+    logging.info("All required artifacts retrievable from version directory")
     continue
 
   for index, necessaryFile in enumerate(necessaryFiles) :
@@ -144,3 +145,7 @@ for specfile in specfiles:
         sys.exit(necessaryFile+" is not available in GCS or Maven")
 
 
+##test maven cetnral
+##logging.debug
+##test if spec.json has nothing in it
+##test if artifact not there in GCS bucket or Maven central
