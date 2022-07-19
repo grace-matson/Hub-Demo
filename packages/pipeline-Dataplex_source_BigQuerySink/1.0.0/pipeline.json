@@ -1,0 +1,118 @@
+{
+    "resources": {
+        "memoryMB": 2048,
+        "virtualCores": 1
+    },
+    "driverResources": {
+        "memoryMB": 2048,
+        "virtualCores": 1
+    },
+    "connections": [
+        {
+            "from": "Dataplex",
+            "to": "BigQuery"
+        }
+    ],
+    "comments": [],
+    "postActions": [],
+    "properties": {},
+    "processTimingEnabled": true,
+    "stageLoggingEnabled": false,
+    "stages": [
+        {
+            "name": "Dataplex",
+            "plugin": {
+                "name": "Dataplex",
+                "type": "batchsource",
+                "label": "Dataplex",
+                "artifact": {
+                    "name": "google-cloud",
+                    "version": "[0.19.1,7.0.0-SNAPSHOT)",
+                    "scope": "USER"
+                },
+                "properties": {
+                    "referenceName": "partition_date",
+                    "project": "auto-detect",
+                    "serviceAccountType": "filePath",
+                    "serviceFilePath": "auto-detect",
+                    "filter": "date = '${logicalStartTime(yyyy-MM-dd)}' "
+                }
+            },
+            "information": {
+                "comments": {
+                    "list": [
+                        {
+                            "content": "This plugin gives us options to enter Dataplex source details, , credentials and so on.\n\nYou can link your Dataplex BQ datasets or Dataplex GCS assets in this plugin as a source.\n\nAfter that you have options to use filters. \nDynamic date for scheduled pipelines can be given in filters as given in this pipeline.",
+                            "createDate": 1644908162074
+                        }
+                    ]
+                }
+            },
+            "outputSchema": [
+                {
+                    "name": "etlSchemaBody",
+                    "schema": ""
+                }
+            ],
+            "id": "Dataplex"
+        },
+        {
+            "name": "BigQuery",
+            "plugin": {
+                "name": "BigQueryTable",
+                "type": "batchsink",
+                "label": "BigQuery",
+                "artifact": {
+                    "name": "google-cloud",
+                    "version": "[0.19.1,7.0.0-SNAPSHOT)",
+                    "scope": "USER"
+                },
+                "properties": {
+                    "project": "auto-detect",
+                    "serviceAccountType": "filePath",
+                    "serviceFilePath": "auto-detect",
+                    "operation": "insert",
+                    "truncateTable": "false",
+                    "allowSchemaRelaxation": "false",
+                    "location": "US",
+                    "createPartitionedTable": "false",
+                    "partitioningType": "TIME",
+                    "partitionFilterRequired": "false",
+                    "useConnection": "false"
+                }
+            },
+            "information": {
+                "comments": {
+                    "list": [
+                        {
+                            "content": "This plugin shows us all the tables in BigQuery.\n\nYou need to add a connection to your project in order to fetch all the datasets.\nAfter that you have options like partition and fetch schema.",
+                            "createDate": 1646294147168
+                        }
+                    ]
+                }
+            },
+            "outputSchema": [
+                {
+                    "name": "etlSchemaBody",
+                    "schema": ""
+                }
+            ],
+            "inputSchema": [
+                {
+                    "name": "Dataplex",
+                    "schema": ""
+                }
+            ],
+            "id": "BigQuery"
+        }
+    ],
+    "schedule": "0 1 */1 * *",
+    "engine": "spark",
+    "numOfRecordsPreview": 100,
+    "rangeRecordsPreview": {
+        "min": 1,
+        "max": "5000"
+    },
+    "description": "Dataplex-BigQuery with filter as dynamic date.",
+    "maxConcurrentRuns": 1
+}

@@ -1,0 +1,39 @@
+{
+  "specVersion": "1.0",
+  "description": "Transfers data from Salesforce to Dataplex.",
+  "label": "Transfer data from Salesforce to Dataplex",
+  "author": "Google",
+  "org": "Google, LLC",
+  "cdapVersion": "[6.6.0,7.0.0-SNAPSHOT)",
+  "created": 1653520433,
+  "categories": [
+    "pipeline"
+  ],
+  "actions": [
+    {
+      "type": "create_pipeline_draft",
+      "label": "Create pipeline",
+      "arguments": [
+        {
+          "name": "artifact",
+          "value": {
+            "scope": "system",
+            "name": "cdap-data-pipeline",
+            "version": "[6.6.0,7.0.0-SNAPSHOT)"
+          },
+          "canModify": false
+        },
+        {
+          "name": "name",
+          "value": "Salesforce_source_to_Dataplex_Sink",
+          "canModify": true
+        },
+        {
+          "name": "config",
+          "value": "pipeline.json",
+          "canModify": false
+        }
+      ]
+    }
+  ]
+}
