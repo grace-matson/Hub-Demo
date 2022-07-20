@@ -21,16 +21,20 @@ jobs:
       with:
         maven-version: 3.6.3
 
-    - name: 'Set up Cloud SDK'
+    - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
 
+    - name: Build packager
+      run : python3 ./.github/scripts/premerge-build.py
+
     - name: Get list of changed files
-      uses: ruslandulina/compare-basehead-commits@v1
+      uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42
       if: always()
       id: list
       with:
         format: 'json'
-    - name: echo
+
+    - name: Echo list of added and modified files in PR
       run: |
         echo ${{ steps.list.outputs.added }}
         echo ${{ steps.list.outputs.modified }}
@@ -39,7 +43,7 @@ jobs:
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
-      run: python3 ./.github/scripts/check.py
+      run: python3 ./.github/scripts/premerge-validate.py
 
 
 

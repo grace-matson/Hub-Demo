@@ -29,7 +29,7 @@ jobs:
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
-      run: python3 ./.github/scripts/check.py
+      run: python3 ./.github/scripts/premerge-validate.py
 
 
 
