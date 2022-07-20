@@ -9,7 +9,7 @@ import ast
 import subprocess as sp
 
 #Setting logging level to INFO
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG)
 
 bucket_name = 'hub-cdap-io'
 bucket_dir = 'v2/'
@@ -20,8 +20,8 @@ only_warning_types =['create_driver_artifact']
 added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
 modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
 am_list = added_list + modified_list
-logging.info('List of added or modified files within pull request')
-logging.info(am_list)
+logging.debug('List of added or modified files within pull request')
+logging.debug(am_list)
 
 
 specfiles = [] #storing the modified spec.json file names
@@ -38,10 +38,10 @@ for file in am_list:
     modifiedPlugins.append(plugin+'/'+version)
 
 #logging the final list of plugin version which were added/modified
-logging.info("Modified plugins are (where spec.json was modified/added) :")
-logging.info(modifiedPlugins)
-logging.info("Spec.json files are :")
-logging.info(specfiles)
+logging.debug("Modified plugins are (where spec.json was modified/added) :")
+logging.debug(modifiedPlugins)
+logging.debug("Spec.json files are :")
+logging.debug(specfiles)
 
 if(len(specfiles)==0):
   #exiting successfully if none of the modified/added files are spec.json
@@ -53,8 +53,8 @@ packagesList = json.loads(open("./packages.json", "r").read())
 mod_packagesDict = dict([(plugin['name'] + '/' + plugin['version'], plugin)  # Key: "<plugin_name>/<version>" Value: artifact object in packagesList
                          for plugin in packagesList
                          if plugin['name'] +'/' + plugin['version'] in modifiedPlugins]) # only appending those plugins which are modified/added
-logging.info("Dictionary of modified artifacts: \n")
-logging.info(mod_packagesDict)
+logging.debug("Dictionary of modified artifacts: \n")
+logging.debug(mod_packagesDict)
 
 if(len(mod_packagesDict)!=len(modifiedPlugins)):
   #Exit failure if the no.of modified plugins in the packages.json file is not the same as the no.of modified plugins
@@ -62,19 +62,19 @@ if(len(mod_packagesDict)!=len(modifiedPlugins)):
 
 for index, plugin in enumerate(modifiedPlugins):
   specFile = json.loads(open(specfiles[index], "r").read())
-  logging.info("\n\n Printing specFile for "+ plugin)
-  logging.info(json.dumps(specFile, indent=2))
+  logging.debug("\n\n Printing specFile for "+ plugin)
+  logging.debug(json.dumps(specFile, indent=2))
 
   packagesDictObject = mod_packagesDict[plugin]
-  logging.info("\n\n Printing packages.json info for "+ plugin)
-  logging.info(json.dumps(packagesDictObject, indent=2))
+  logging.debug("\n\n Printing packages.json info for "+ plugin)
+  logging.debug(json.dumps(packagesDictObject, indent=2))
 
   #Validating packages.json
   if('cdapVersion' in specFile and not(specFile['cdapVersion']==packagesDictObject['cdapVersion'])):
     sys.exit("Fields do not match in packages.json and the added plugins")
 
 else :
-  logging.info("Success, all modified/added plugin versions are added in packages.json")
+  logging.debug("Success, all modified/added plugin versions are added in packages.json")
 
 
 ##3. ITERATING THROUGH THE MODIFIED PLUGINS AND CHECKING IF ALL THE REQUIRED DEPENDENCIES ARE RETRIEVABLE
@@ -86,7 +86,7 @@ for specfile in specfiles:
   artifactDir = os.path.join(pathList[0], pathList[1]) #plugin directory ex: "packages/database-plugin-db2-plugin"
   artifactVersionDir = specfile[:-10] #plugin version directory ex: "packages/database-plugin-db2-plugin/1.3.0"
 
-  logging.info(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
+  logging.debug(f'Inspecting spec.json of {artifactVersionDir} for required files') #required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specfile, "r").read()) #loading json data in spec.json as dictionary
   necessaryFiles = [] #list of files which need to be retrieved from GCS or Maven Central
   only_warn= []
@@ -103,14 +103,13 @@ for specfile in specfiles:
           only_warn.append(warn)
 
   if len(necessaryFiles) == 0 :
-    logging.info("All required artifacts retrievable from version directory")
+    logging.debug("All required artifacts retrievable from version directory")
     continue
 
   for index, necessaryFile in enumerate(necessaryFiles) :
 
-    # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
     if(sp.getoutput(f'gsutil -q stat gs://{bucket_name}/{bucket_dir}{necessaryFile}; echo $?')=='0'):
-      logging.info(necessaryFile+" found in GCS bucket")
+      logging.debug(necessaryFile+" found in GCS bucket")
 
     elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
       #getting required info from build.yaml file
@@ -124,10 +123,10 @@ for specfile in specfiles:
 
       #using Maven Central search api to get the required file
       response = requests.get(f'https://search.maven.org/solrsearch/select?q=g:{groupId}%20AND%20a:{artifactId}%20AND%20v:{version}%20AND%20p:{packaging}&rows=20&wt=json').json()
-      logging.info(response['response']['docs'])
+      logging.debug(response['response']['docs'])
 
       if(len(response['response']['docs'])>0):
-        logging.info(necessaryFile+" found in Maven Central")
+        logging.debug(necessaryFile+" found in Maven Central")
       else:
         logging.warning(necessaryFile+" not found in GCS or Maven Central")
         if(not(only_warn[index])):
@@ -138,7 +137,3 @@ for specfile in specfiles:
         sys.exit(necessaryFile+" is not available in GCS or Maven")
 
 
-##test maven cetnral
-##logging.debug
-##test if spec.json has nothing in it
-##test if artifact not there in GCS bucket or Maven central
