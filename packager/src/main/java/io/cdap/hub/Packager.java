@@ -52,12 +52,12 @@ import javax.annotation.Nullable;
  * Expects packages to be under a specific directory structure of:
  *
  * baseDir/packages/name/version/spec.json
- * baseDir/packages/name/version/icon.png
+ * baseDir/packages/name/version/ico.png
  * baseDir/packages/name/version/[other resources]
  *
  * and category information to be under a similar directory structure of:
  *
- * baseDir/categories/name/icon.png
+ * baseDir/categories/name/ico.png
  */
 public class Packager {
   private static final Logger LOG = LoggerFactory.getLogger(Packager.class);
@@ -231,7 +231,7 @@ public class Packager {
         continue;
       }
 
-      File iconFile = new File(file, "icon.png");
+      File iconFile = new File(file, "ico.png");
       if (iconFile.exists() && iconFile.isFile()) {
         icons.put(file.getName(), iconFile);
       }
@@ -250,7 +250,7 @@ public class Packager {
     for (File packageFile : sortedListFiles(packageDir)) {
       String fileName = packageFile.getName();
 
-      if (fileName.equals("icon.png")) {
+      if (fileName.equals("ico.png")) {
         builder.setIcon(packageFile);
         continue;
       }
