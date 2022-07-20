@@ -1,44 +1,45 @@
-name: unit_test_gh
+name: premerge-validation-test
 
 on:
   pull_request:
+
 jobs:
-  check:
-    runs-on: ubuntu-latest
+  premerge-validate:
+    runs-on: ubuntu-latest #running on Github runners
     steps:
     - name: Checkout PR
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.head.sha }}
 
-    - name: Set up JDK 1.8
+    - name: Set up JDK 1.8 #to setup Java for building packager
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
 
-    - name: Set up Maven
+    - name: Set up Maven #to setup Maven for building packager
       uses: stCarolas/setup-maven@v4.4
       with:
         maven-version: 3.6.3
 
-    - name: Set up Cloud SDK
+    - name: Set up Cloud SDK #to use gsutil commands when retrieving necessary files
       uses: google-github-actions/setup-gcloud@v0
 
-    - name: Build packager
+    - name: Build packager #create packages.json file
       run : python3 ./.github/scripts/premerge-build.py
 
-    - name: Get list of changed files
+    - name: Get list of changed files #external action to get list of added, modified, renamed files within pull request
       uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42
       if: always()
       id: list
       with:
         format: 'json'
 
-    - name: Echo list of added and modified files in PR
+    - name: Echo list of added and modified files in PR #just checking if the list is as expected
       run: |
         echo ${{ steps.list.outputs.added }}
         echo ${{ steps.list.outputs.modified }}
-    - name: Log list and search for necessary files
+    - name: Log list and search for necessary files #list out , find and search for missing artifacts
       if: always()
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
