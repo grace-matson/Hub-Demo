@@ -7,7 +7,7 @@ import requests
 import ast
 import subprocess as sp
 
-#Setting logging level to INFO
+#Setting logging level to DEBUG
 logging.getLogger().setLevel(logging.DEBUG)
 
 bucket_name = 'hub-cdap-io'

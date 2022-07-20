@@ -17,10 +17,10 @@ jobs:
       with:
         java-version: 1.8
 
-    - name: Set up Maven #to setup Maven for building packager
-      uses: stCarolas/setup-maven@v4.4
-      with:
-        maven-version: 3.6.3
+#    - name: Set up Maven #to setup Maven for building packager
+#      uses: stCarolas/setup-maven@v4.4
+#      with:
+#        maven-version: 3.6.3
 
     - name: Set up Cloud SDK #to use gsutil commands when retrieving necessary files
       uses: google-github-actions/setup-gcloud@v0
