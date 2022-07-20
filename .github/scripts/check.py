@@ -20,18 +20,18 @@ bucket_dir = 'v2/'
 only_warning_types =['create_driver_artifact']
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
-# os.chdir('./packager/')
-# utilities.run_shell_command('mvn clean package')
-# os.chdir('../')
-# utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
+os.chdir('./packager/')
+utilities.run_shell_command('mvn clean package')
+os.chdir('../')
+utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
-# added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
-# modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
-# am_list = added_list + modified_list
-# logging.info('List of added or modified files within pull request')
-am_list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
+added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
+modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
+am_list = added_list + modified_list
+logging.info('List of added or modified files within pull request')
+# am_list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
 logging.info(am_list)
 
 
