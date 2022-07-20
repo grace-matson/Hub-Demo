@@ -43,6 +43,7 @@ jobs:
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
+        RENAMED_LIST: ${{ steps.list.outputs.renamed }}
       run: python3 ./.github/scripts/premerge-validate.py
 
 

@@ -19,7 +19,8 @@ only_warning_types =['create_driver_artifact']
 #Getting list of added plugins and modified plugins, and concatenating them
 added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
 modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
-am_list = added_list + modified_list
+renamed_list = ast.literal_eval(os.getenv('RENAMED_LIST'))
+am_list = added_list + modified_list + renamed_list
 logging.debug('List of added or modified files within pull request')
 logging.debug(am_list)
 
