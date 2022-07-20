@@ -21,9 +21,9 @@ only_warning_types =['create_driver_artifact']
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
 os.chdir('./packager/')
-utilities.run_shell_command('mvn clean package')
+utilities.run_shell_command('mvn clean package > /dev/null 2>&1')
 os.chdir('../')
-utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build')
+utilities.run_shell_command('java -cp "packager/target/lib/*:packager/target/*" io.cdap.hub.Tool build > /dev/null 2>&1')
 
 ##2. FETCHING ADDED/MODIFIED PLUGINS
 #Getting list of added plugins and modified plugins, and concatenating them
