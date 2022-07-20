@@ -6,16 +6,17 @@ import json
 import logging
 import requests
 import ast
+import subprocess as sp
 from google.cloud import storage
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)
 
 #Connecting to the GCS bucket
-storage_client = storage.Client()
+# storage_client = storage.Client()
 bucket_name = 'hub-cdap-io'
 bucket_dir = 'v2/'
-bucket = storage_client.bucket(bucket_name)
+# bucket = storage_client.bucket(bucket_name)
 only_warning_types =['create_driver_artifact']
 ##1. CREATING PACAKGES.JSON FILE
 # Running steps to create packages.json
@@ -30,6 +31,7 @@ added_list = ast.literal_eval(os.getenv('ADDED_LIST'))
 modified_list = ast.literal_eval(os.getenv('MODIFIED_LIST'))
 am_list = added_list + modified_list
 logging.info('List of added or modified files within pull request')
+# am_list = ['packages/database-plugin-db2-plugin/1.2.0/spec.json', 'packages/database-plugin-db2-plugin/1.3.0/spec.json']
 logging.info(am_list)
 
 
@@ -106,7 +108,8 @@ for specfile in specfiles:
     for property in object['arguments']:
       if(property['name'] == 'jar' or property['name'] == 'config'): #json file names are under config property, and jar file names under jar property
         requiredFile = os.path.join(artifactVersionDir, property['value'])
-        if(not (os.path.isfile(requiredFile))):
+        #ex: packages/database-plugin-db2-plugin/1.3.0/db2-plugin-1.3.0.json
+        if(not(os.path.isfile(requiredFile))):
           necessaryFiles.append(requiredFile)
           only_warn.append(warn)
 
@@ -116,7 +119,8 @@ for specfile in specfiles:
 
   for index, necessaryFile in enumerate(necessaryFiles) :
 
-    if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+    # if(storage.Blob(bucket=bucket, name=bucket_dir+necessaryFile).exists(storage_client)):
+    if(sp.getoutput(f'gsutil -q stat gs://{bucket_name}/{bucket_dir}{necessaryFile}; echo $?')=='0'):
       logging.info(necessaryFile+" found in GCS bucket")
 
     elif(os.path.isfile(os.path.join(artifactDir, 'build.yaml'))):
