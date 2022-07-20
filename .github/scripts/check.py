@@ -7,7 +7,7 @@ import logging
 import requests
 import ast
 import subprocess as sp
-from google.cloud import storage
+# from google.cloud import storage
 
 #Setting logging level to INFO
 logging.getLogger().setLevel(logging.INFO)

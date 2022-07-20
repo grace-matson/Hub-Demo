@@ -1,4 +1,4 @@
-name: unit_test
+name: unit_test_gh
 
 on:
   pull_request:
