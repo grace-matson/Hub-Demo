@@ -21,7 +21,7 @@ jobs:
           max_attempts: 3
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
-          command: gsutil -m rsync -r ./testdir gs://${{env.CENTRAL_BUCKET}}/
+          command: python3 ./.github/scripts/sync.py
     
   matrix_regional_buckets:
     runs-on: new-runner  
