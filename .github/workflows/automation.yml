@@ -6,6 +6,9 @@ on:
 concurrency:
   group: automation
 
+env:
+  CENTRAL_BUCKET: 'demo-automate-hub-release-test-master'
+
 jobs:
   main_bucket:
     runs-on: new-runner
@@ -18,7 +21,7 @@ jobs:
           max_attempts: 3
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
-          command: gsutil -m rsync -r ./testdir gs://demo-automate-hub-release-test-master/
+          command: gsutil -m rsync -r ./testdir gs://${{env.CENTRAL_BUCKET}}/
     
   matrix_regional_buckets:
     runs-on: new-runner  
@@ -35,7 +38,7 @@ jobs:
           max_attempts: 3
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
-          command: gsutil -m rsync -r gs://demo-automate-hub-release-test-master/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
+          command: gsutil -m rsync -r gs://${{env.CENTRAL_BUCKET}}/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
   extra_job:
     runs-on: new-runner
     steps:
