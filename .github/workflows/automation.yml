@@ -39,20 +39,20 @@ jobs:
           retry_on: error
           on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
           command: gsutil -m rsync -r gs://${{env.CENTRAL_BUCKET}}/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
-  extra_job:
-    runs-on: new-runner
-    steps:
-      - name: Revert changes checkout
-        uses: actions/checkout@v2
-      - name: Extra failure/success script run
-        run: |
-         chmod +x ./.github/scripts/hello.sh
-         ./.github/scripts/hello.sh
+#  extra_job:
+#    runs-on: new-runner
+#    steps:
+#      - name: Revert changes checkout
+#        uses: actions/checkout@v2
+#      - name: Extra failure/success script run
+#        run: |
+#         chmod +x ./.github/scripts/hello.sh
+#         ./.github/scripts/hello.sh
 
   failure_mode:
     runs-on: new-runner  
     if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
-    needs: [matrix_regional_buckets, main_bucket, extra_job]
+    needs: [matrix_regional_buckets, main_bucket]
     steps:
       - name: Revert changes checkout
         uses: actions/checkout@v2
