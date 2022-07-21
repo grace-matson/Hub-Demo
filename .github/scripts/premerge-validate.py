@@ -28,7 +28,7 @@ import subprocess as sp
 logging.getLogger().setLevel(logging.DEBUG)
 
 CENTRAL_GCS_BUCKET_PREFIX = 'hub-cdap-io/v2'
-onlyWarningTypes: list[str] = ['create_driver_artifact']
+onlyWarningTypes: List[str] = ['create_driver_artifact']
 
 ## 1 . FETCHING ADDED/MODIFIED ARTIFACTS
 # Getting list of added artifacts and modified artifacts, and concatenating them
@@ -39,8 +39,8 @@ logging.debug('List of added or modified files within pull request')
 logging.debug(am_list)
 
 
-specFiles: list[Any] = []  # storing the modified spec.json file names
-modifiedArtifacts: list[Any] = []  # storing modified artifacts as <artifact>/<version> format
+specFiles: List[str] = []  # storing the modified spec.json file names
+modifiedArtifacts: List[str] = []  # storing modified artifacts as <artifact>/<version> format
 
 # loop to check for modified spec.json files
 for file in am_list:
@@ -63,9 +63,9 @@ if len(specFiles) == 0:
   sys.exit(0)
 
 ## 2. CHECKING PACKAGES.JSON FILE
-packages: list[Any] = json.loads(open("./packages.json", "r").read())
+packages: List[Any] = json.loads(open("./packages.json", "r").read())
 # converting list to dictionary format to access easily later
-modifiedPackages: dict[str, Any] = dict([(artifact['name'] + '/' + artifact['version'], artifact)  # Key: "<artifact_name>/<version>" Value: artifact object in packagesList
+modifiedPackages: Dict[str, Any] = dict([(artifact['name'] + '/' + artifact['version'], artifact)  # Key: "<artifact_name>/<version>" Value: artifact object in packagesList
                                          for artifact in packages
                                          if artifact['name'] + '/' + artifact['version'] in modifiedArtifacts])  # only appending those artifacts which are modified/added
 logging.debug("Dictionary of modified artifacts: \n")
@@ -106,8 +106,8 @@ for specFile in specFiles:
 
   logging.debug(f'Inspecting spec.json of {artifactVersionDir} for required files')  # required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specFile, "r").read())  # loading json data in spec.json as dictionary
-  necessaryFiles: list[str] = []  # list of files which need to be retrieved from GCS or Maven Central
-  onlyWarn: list[bool] = []
+  necessaryFiles: List[str] = []  # list of files which need to be retrieved from GCS or Maven Central
+  onlyWarn: List[bool] = []
   for obj in specData['actions']:
     for objProperty in obj['arguments']:
       if objProperty['name'] == 'jar' or objProperty['name'] == 'config':  # json file names are under config property, and jar file names under jar property
