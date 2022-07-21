@@ -61,9 +61,9 @@ if len(specFiles) == 0:
   sys.exit(0)
 
 ## 2. CHECKING PACKAGES.JSON FILE
-packages: list[Any] = json.loads(open("./packages.json", "r").read())
+packages = json.loads(open("./packages.json", "r").read())
 # converting list to dictionary format to access easily later
-modifiedPackages: dict[str, Any] = dict([(artifact['name'] + '/' + artifact['version'], artifact)  # Key: "<artifact_name>/<version>" Value: artifact object in packagesList
+modifiedPackages = dict([(artifact['name'] + '/' + artifact['version'], artifact)  # Key: "<artifact_name>/<version>" Value: artifact object in packagesList
                                          for artifact in packages
                                          if artifact['name'] + '/' + artifact['version'] in modifiedArtifacts])  # only appending those artifacts which are modified/added
 logging.debug("Dictionary of modified artifacts: \n")
@@ -104,8 +104,8 @@ for specFile in specFiles:
 
   logging.debug(f'Inspecting spec.json of {artifactVersionDir} for required files')  # required files = jar or json files listed in actions field of spec.json file
   specData = json.loads(open(specFile, "r").read())  # loading json data in spec.json as dictionary
-  necessaryFiles: list[str] = []  # list of files which need to be retrieved from GCS or Maven Central
-  onlyWarn: list[bool] = []
+  necessaryFiles = []  # list of files which need to be retrieved from GCS or Maven Central
+  onlyWarn = []
   for obj in specData['actions']:
     for objProperty in obj['arguments']:
       if objProperty['name'] == 'jar' or objProperty['name'] == 'config':  # json file names are under config property, and jar file names under jar property
