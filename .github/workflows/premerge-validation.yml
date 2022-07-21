@@ -32,10 +32,6 @@ jobs:
       with:
         format: 'json'
 
-    - name: Echo list of added and modified files in PR #just checking if the list is as expected
-      run: |
-        echo ${{ steps.list.outputs.added }}
-        echo ${{ steps.list.outputs.modified }}
     - name: Log list and search for necessary files #list out , find and search for missing artifacts
       if: always()
       env:
