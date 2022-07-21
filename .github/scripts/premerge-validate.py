@@ -26,7 +26,7 @@ import subprocess as sp
 logging.getLogger().setLevel(logging.DEBUG)
 
 CENTRAL_GCS_BUCKET_PREFIX = 'hub-cdap-io/v2'
-onlyWarningTypes: list[str] = ['create_driver_artifact']
+onlyWarningTypes = ['create_driver_artifact']
 
 ## 1 . FETCHING ADDED/MODIFIED ARTIFACTS
 # Getting list of added artifacts and modified artifacts, and concatenating them
