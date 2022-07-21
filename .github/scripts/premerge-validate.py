@@ -37,8 +37,8 @@ logging.debug('List of added or modified files within pull request')
 logging.debug(am_list)
 
 
-specFiles: list[Any] = []  # storing the modified spec.json file names
-modifiedArtifacts: list[Any] = []  # storing modified artifacts as <artifact>/<version> format
+specFiles = []  # storing the modified spec.json file names
+modifiedArtifacts = []  # storing modified artifacts as <artifact>/<version> format
 
 # loop to check for modified spec.json files
 for file in am_list:
