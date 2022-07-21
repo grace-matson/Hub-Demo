@@ -34,10 +34,10 @@ jobs:
       - name: Syncing buckets, max 3 retries
         uses: nick-fields/retry@v1.0.0
         with:
-          timeout_seconds: 15
+          timeout_minutes: 1
           max_attempts: 3
-          retry_on: error
-          on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
+#          retry_on: error
+#          on_retry_command: echo "The upload to ${{matrix.loc}} has failed"
           command: gsutil -m rsync -r -n gs://${{env.CENTRAL_BUCKET}}/ gs://demo-automate-hub-release-test-${{ matrix.loc }}/
 #  extra_job:
 #    runs-on: new-runner
