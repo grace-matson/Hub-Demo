@@ -127,7 +127,7 @@ for specFile in specFiles:
   for index, necessaryFile in enumerate(necessaryFiles):
 
     if sp.getoutput(f'gsutil -q stat gs://{CENTRAL_GCS_BUCKET_PREFIX}/{necessaryFile}; echo $?') == '0':
-      logging.debug(necessaryFile+" found in GCS bucket")
+      logging.debug(f"{necessaryFile} found in GCS bucket")
 
     elif os.path.isfile(os.path.join(artifactDir, 'build.yaml')):
       # getting required info from build.yaml file
@@ -144,12 +144,12 @@ for specFile in specFiles:
       logging.debug(response['response']['docs'])
 
       if len(response['response']['docs']) > 0:
-        logging.debug(necessaryFile+" found in Maven Central")
+        logging.debug(f"{necessaryFile} found in Maven Central")
       else:
-        logging.warning(necessaryFile+" not found in GCS or Maven Central")
+        logging.warning(f"{necessaryFile} not found in GCS or Maven Central")
         if not(onlyWarn[index]):
-          sys.exit(necessaryFile+" is not available in GCS or Maven")
+          sys.exit(f"{necessaryFile} is not available in GCS or Maven")
     else:
       logging.warning('build.yaml file does not exist for ' + artifactDir)
       if not(onlyWarn[index]):
-        sys.exit(necessaryFile+" is not available in GCS or Maven")
+        sys.exit(f"{necessaryFile} is not available in GCS or Maven")
