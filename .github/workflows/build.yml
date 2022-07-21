@@ -1,17 +1,11 @@
 name: build
 
 on:
-  workflow_run:
-    workflows: [release-to-maven-central-tag]
-    types:
-      - completed
   workflow_dispatch:
-
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Echo
-      run: |
-        echo "${{ toJson(github.event.workflow_run)}}"
+      run: echo "Hello world, this is a build commit"
