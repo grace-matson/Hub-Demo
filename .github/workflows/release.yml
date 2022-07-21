@@ -1,95 +1,37 @@
-name: release-to-maven-central-tag
+name: release
+
 on:
   workflow_dispatch:
 
 jobs:
-#  setup-job:
-#    if: ${{ github.ref_type == 'tag' }}
-#    uses: ./.github/workflows/build.yml
-
-  release-job:
-    runs-on: new-runner
-#    needs: setup-job
+  check:
+    runs-on: ubuntu-latest
     steps:
-#      - run: pip install google-cloud-storage
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Log list
-        if: always()
-        run: python3 ./.github/scripts/lis.py
-#    - uses: actions/checkout@v2
-#      with:
-#        ref: ${{ github.sha }}
-#    - name: Set up JDK 1.8
-#      uses: actions/setup-java@v1
-#      with:
-#        java-version: 1.8
-#
-#    - name: Set up Maven
-#      uses: stCarolas/setup-maven@v4.4
-#      with:
-#        maven-version: 3.6.3
-#
-#    - name: Remove failed downloads
-#      run: find ~/.m2  -name "*.lastUpdated" -exec grep -q "Could not transfer" {} \; -print -exec rm {} \;
-#
-#    - name: Build with Maven
-#      run: mvn -B package --file pom.xml
-#      env:
-#        MAVEN_OPTS: '-Xmx3200m'
-#
-#    - name: Set up Apache Maven Central
-#      uses: actions/setup-java@v1
-#      with: # running setup-java again overwrites the settings.xml
-#        java-version: 1.8
-#        server-id: ossrh
-#        server-username: OSSRH_USERNAME
-#        server-password: OSSRH_PASSWORD
-#        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-#        gpg-passphrase: MAVEN_GPG_PASSPHRASE
-#
-#    - name: Publish to Apache Maven Central
-#      run: mvn -DskipTests clean deploy -P release -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
-#      env:
-#        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#        OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-#        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-#        MAVEN_OPTS: '-Xmx3200m'
+    - name: Revert changes checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-#name: release
-#
-#on:
-#  workflow_dispatch:
-#
-#jobs:
-#  check:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - name: Revert changes checkout
-#      uses: actions/checkout@v2
-#      with:
-#        fetch-depth: 0
-#
-#    - name: Last successful commit ID
-#      if: always()
-#      uses: grace-matson/last-successful-build-action@v2.0.7
-#      id: last_successful_commit_build
-#      with:
-#        token: ${{ github.token }}
-#        branch: ${{ github.ref_name }}
-#        workflow: "build"
-#        verify: true
-#
-#    - name: Last successful commit ID for e2e
-#      if: always()
-#      uses: grace-matson/last-successful-build-action@v2.0.7
-#      id: last_successful_commit_e2e
-#      with:
-#        token: ${{ github.token }}
-#        branch: ${{ github.ref_name }}
-#        workflow: "e2e"
-#        verify: true
-#
-#    - name: Checking for e2e and build workflows
-#      if: ${{always() && !(steps.last_successful_commit_build.outputs.sha == github.sha && steps.last_successful_commit_e2e.outputs.sha == github.sha)}}
-#      run: exit 1
+    - name: Last successful commit ID
+      if: always()
+      uses: grace-matson/last-successful-build-action@v2.0.7
+      id: last_successful_commit_build
+      with:
+        token: ${{ github.token }}
+        branch: ${{ github.ref_name }}
+        workflow: "build"
+        verify: true
+
+    - name: Last successful commit ID for e2e
+      if: always()
+      uses: grace-matson/last-successful-build-action@v2.0.7
+      id: last_successful_commit_e2e
+      with:
+        token: ${{ github.token }}
+        branch: ${{ github.ref_name }}
+        workflow: "e2e"
+        verify: true
+
+    - name: Checking for e2e and build workflows
+      if: ${{always() && !(steps.last_successful_commit_build.outputs.sha == github.sha && steps.last_successful_commit_e2e.outputs.sha == github.sha)}}
+      run: exit 1
