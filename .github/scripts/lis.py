@@ -24,7 +24,7 @@ response = response.json()
 print(response['response']['docs'])
 import ast
 #
-# str = '["packages/plugin-google-drive/1.4.0/icon.png","packages/plugin-google-drive/1.4.0/spec.json"]'
+# str = '["packages/plugin-google-drive/1.4.0/ico.png","packages/plugin-google-drive/1.4.0/spec.json"]'
 # print(str)
 # print(ast.literal_eval(str))
 # print(str.strip('[]"').split(','))

@@ -1,7 +1,9 @@
 name: unit_test
 
 on:
-  pull_request:
+  workflow_dispatch:
+
+#  pull_request:
 jobs:
   check:
     runs-on: new-runner
@@ -29,7 +31,7 @@ jobs:
       env:
         ADDED_LIST: ${{ steps.list.outputs.added }}
         MODIFIED_LIST: ${{ steps.list.outputs.modified }}
-      run: python3 ./.github/scripts/check.py
+      run: python3 ./.github/scripts/premerge-validate.py
 
 
 
