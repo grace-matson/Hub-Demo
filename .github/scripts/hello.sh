@@ -1,4 +1,4 @@
- exit 1
+# exit 1
 
 
 echo "Hello"
